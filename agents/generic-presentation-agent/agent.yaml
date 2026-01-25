@@ -1,0 +1,48 @@
+name: "Generic Presentation Agent"
+description: "Generates HTML slideshows from any content with a sleek black, white, and gold theme"
+version: "1.0.0"
+model: "claude-sonnet-4-20250514"
+
+# Agent capabilities
+capabilities:
+  - content_analysis
+  - html_generation
+  - presentation_design
+
+# Input types this agent can process
+inputs:
+  - type: "text"
+    description: "Raw text content to convert into slides"
+  - type: "markdown"
+    description: "Markdown formatted content"
+  - type: "outline"
+    description: "Bullet-point outline of presentation topics"
+  - type: "url"
+    description: "URL to fetch and convert content from"
+
+# Output configuration
+output:
+  format: "html"
+  description: "Self-contained HTML slideshow file"
+
+# Assets used by this agent
+assets:
+  templates:
+    - "assets/templates/slideshow-base.html"
+  styles:
+    - "assets/templates/slideshow-styles.css"
+
+# Default settings
+settings:
+  theme:
+    primary: "#000000"      # Black
+    secondary: "#FFFFFF"    # White
+    accent: "#D4AF37"       # Gold
+  slide_defaults:
+    transition: "fade"
+    duration: "0.5s"
+  features:
+    - keyboard_navigation
+    - progress_indicator
+    - slide_counter
+    - fullscreen_support
