@@ -9,6 +9,7 @@ This repository provides a structured approach to organizing and deploying Claud
 - **Consistent agent definitions** - Standardized configuration format for all agents
 - **Reusable skills** - Share capabilities across multiple agents
 - **Shared assets** - Centralized prompts, templates, and configurations
+- **MCP connections** - External tool and data source integrations
 
 ## Directory Structure
 
@@ -23,6 +24,9 @@ Claude-Agents/
 │   ├── prompts/            # System prompts and templates
 │   ├── templates/          # Configuration templates
 │   └── configs/            # Shared configurations
+├── mcp/                    # MCP server connections
+│   ├── servers/            # Server definitions
+│   └── configs/            # Connection configurations
 └── README.md
 ```
 
@@ -59,11 +63,25 @@ mkdir skills/custom/my-skill
 
 See the [Skills README](skills/README.md) for detailed instructions.
 
+### 4. Configure MCP Connections
+
+Add MCP servers to enable external tool access:
+
+```yaml
+# agents/my-agent/agent.yaml
+mcp_servers:
+  - mcp/servers/github
+  - mcp/servers/database
+```
+
+See the [MCP Guide](mcp/README.md) for available servers and configuration.
+
 ## Documentation
 
 - [Agents Guide](agents/README.md) - How to create and configure agents
 - [Skills Guide](skills/README.md) - How to create reusable skills
 - [Assets Guide](assets/README.md) - How to manage shared resources
+- [MCP Guide](mcp/README.md) - How to configure MCP server connections
 
 ## Contributing
 
