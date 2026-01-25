@@ -11,6 +11,7 @@ This repository provides a structured approach to organizing and deploying Claud
 - **Shared assets** - Centralized prompts, templates, and configurations
 - **MCP connections** - External tool and data source integrations
 - **Commands & workflows** - Chain agents together for complex automation
+- **Input/Output workflow** - Organized file processing with temporary inputs and persistent outputs
 
 ## Directory Structure
 
@@ -31,6 +32,8 @@ Claude-Agents/
 ├── commands/               # Reusable commands & workflows
 │   ├── workflows/          # Multi-agent pipelines
 │   └── scripts/            # Standalone command scripts
+├── input/                  # Temporary input files (auto-cleaned)
+├── output/                 # Generated outputs (presentations, reports)
 └── README.md
 ```
 
@@ -99,6 +102,25 @@ steps:
 ```
 
 See the [Commands Guide](commands/README.md) for workflow patterns.
+
+### 6. Process Files with Agents
+
+Use the input/output workflow:
+
+```bash
+# Add source content to input
+cp my-content.md input/
+
+# Run an agent to process it
+claude "Create a presentation from input/my-content.md"
+
+# Find the generated output
+ls output/
+# → my-content-presentation.html
+```
+
+- **input/** - Temporary files for agents to consume (cleaned after use)
+- **output/** - Generated documents, presentations, and reports
 
 ## Documentation
 
