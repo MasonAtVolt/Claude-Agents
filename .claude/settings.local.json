@@ -10,7 +10,8 @@
       "Bash(git commit:*)",
       "Bash(git check-ignore:*)",
       "Bash(node fetch-transcripts.js:*)",
-      "Bash(node generate-presentations.js:*)"
+      "Bash(node generate-presentations.js:*)",
+      "Bash(git push:*)"
     ]
   }
 }
