@@ -38,6 +38,10 @@ assets:
   styles:
     - "assets/templates/slideshow-styles.css"
 
+# MCP server connections
+mcp_servers:
+  - servers/notion
+
 # Default settings
 settings:
   theme:

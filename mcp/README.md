@@ -33,7 +33,7 @@ Connection configurations for different environments:
 
 | Server | Description | Status |
 |--------|-------------|--------|
-| *Add your servers here* | | |
+| notion | Notion workspace connection for reading/writing pages and databases | Active |
 
 ## Configuring MCP Connections
 
@@ -118,6 +118,18 @@ mcp_servers:
   "args": ["-y", "@modelcontextprotocol/server-slack"],
   "env": {
     "SLACK_TOKEN": "${SLACK_TOKEN}"
+  }
+}
+```
+
+### Notion
+```json
+{
+  "name": "notion",
+  "command": "npx",
+  "args": ["-y", "@notionhq/notion-mcp-server"],
+  "env": {
+    "OPENAPI_MCP_HEADERS": "{\"Authorization\": \"Bearer ${NOTION_API_KEY}\", \"Notion-Version\": \"2022-06-28\"}"
   }
 }
 ```
