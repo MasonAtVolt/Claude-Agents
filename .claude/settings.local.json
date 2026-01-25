@@ -4,7 +4,13 @@
       "Bash(npx:*)",
       "Bash(curl:*)",
       "Bash(python -c:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(git reset:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(node fetch-transcripts.js:*)",
+      "Bash(node generate-presentations.js:*)"
     ]
   }
 }

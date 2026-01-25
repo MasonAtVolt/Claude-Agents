@@ -1,0 +1,65 @@
+name: "Show and Tell Presentation Agent"
+description: "Converts meeting transcripts into professional Show and Tell HTML presentations"
+version: "1.0.0"
+model: "claude-sonnet-4-20250514"
+
+# Agent capabilities
+capabilities:
+  - transcript_parsing
+  - html_generation
+  - presentation_design
+  - notion_integration
+  - brand_compliance
+
+# Input types this agent can process
+inputs:
+  - type: "notion_page"
+    description: "Notion page URL or title containing meeting transcript"
+  - type: "transcript"
+    description: "Raw meeting transcript text"
+  - type: "markdown"
+    description: "Markdown formatted transcript"
+  - type: "text"
+    description: "Plain text meeting notes"
+
+# Output configuration
+output:
+  format: "html"
+  description: "Interactive Show and Tell HTML slideshow presentation"
+
+# Assets used by this agent
+assets:
+  brand:
+    - "assets/prompts/brand-guidelines.md"
+  logos:
+    - "assets/logos/volt-logo-full.png"
+    - "assets/logos/volt-logo-mark.png"
+  templates:
+    - "assets/templates/Show and tell powerpoint presentation example.pdf"
+
+# MCP server connections
+mcp_servers:
+  - servers/notion
+
+# Default settings
+settings:
+  theme:
+    primary: "#000000"      # Black
+    secondary: "#FFFFFF"    # White
+    accent: "#D4AF37"       # Gold
+    logo_yellow: "#FFD93D"
+    logo_orange: "#F4A020"
+  typography:
+    heading: "Montserrat"
+    body: "Fira Sans"
+    code: "Fira Code"
+  slide_defaults:
+    transition: "fade"
+    duration: "0.5s"
+  features:
+    - keyboard_navigation
+    - touch_swipe_navigation
+    - progress_indicator
+    - slide_counter
+    - thumbnail_grid
+    - print_support
