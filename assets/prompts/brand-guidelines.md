@@ -68,27 +68,49 @@ Our visual identity is rooted in **technical precision** and **minimalist elegan
 
 ## Typography
 
-### Font Stack
+### Primary Font — Montserrat
+Used for headings, titles, and display text.
 ```css
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+font-family: 'Montserrat', sans-serif;
+```
+
+**Google Fonts Import:**
+```html
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+```
+
+### Secondary Font — Fira Sans
+Used for body text, paragraphs, and UI elements.
+```css
+font-family: 'Fira Sans', sans-serif;
+```
+
+**Google Fonts Import:**
+```html
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 ```
 
 ### Monospace (Code)
 ```css
-font-family: 'SF Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+font-family: 'Fira Code', 'SF Mono', 'Consolas', 'Monaco', monospace;
+```
+
+### Combined Import
+```html
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 ```
 
 ### Type Scale
 
-| Element | Size | Weight | Color |
-|---------|------|--------|-------|
-| Display/Hero | 4-5rem | 700 | White |
-| Heading 1 | 3rem | 600 | White |
-| Heading 2 | 2.5rem | 600 | White |
-| Heading 3 | 1.75rem | 600 | White |
-| Body | 1.125-1.25rem | 400 | White/Muted White |
-| Caption | 0.875rem | 400 | Subtle White |
-| Code | 1rem | 400 | White with Gold border |
+| Element | Font | Size | Weight | Color |
+|---------|------|------|--------|-------|
+| Display/Hero | Montserrat | 4-5rem | 700 | White |
+| Heading 1 | Montserrat | 3rem | 600 | White |
+| Heading 2 | Montserrat | 2.5rem | 600 | White |
+| Heading 3 | Montserrat | 1.75rem | 600 | White |
+| Body | Fira Sans | 1.125-1.25rem | 400 | White/Muted White |
+| Caption | Fira Sans | 0.875rem | 400 | Subtle White |
+| Code | Fira Code | 1rem | 400 | White with Gold border |
 
 ### Typography Rules
 - Use sentence case for headings (not ALL CAPS except for section dividers)
@@ -319,8 +341,9 @@ COLORS:
   Light Gold: #F4CF67
 
 FONTS:
-  Body: System sans-serif stack
-  Code: SF Mono, Fira Code, Consolas
+  Primary (Headings): Montserrat
+  Secondary (Body):   Fira Sans
+  Code:               Fira Code
 
 SPACING:
   Base unit: 8px
