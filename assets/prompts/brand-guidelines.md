@@ -10,6 +10,47 @@ Our visual identity is rooted in **technical precision** and **minimalist elegan
 
 ---
 
+## Logo
+
+### Primary Logo
+The Volt Technologies logo consists of a stylized lightning bolt icon paired with the company name.
+
+**Logo Files Location:** `assets/logos/`
+
+| Asset | File | Usage |
+|-------|------|-------|
+| Full Logo | `volt-logo-full.png` | Documents, headers, presentations, reports |
+| Logo Mark | `volt-logo-mark.png` | Favicons, small spaces, app icons, watermarks |
+
+### Logo Colors
+
+| Element | Color | Hex |
+|---------|-------|-----|
+| Bolt Top | Yellow | `#FFD93D` |
+| Bolt Bottom | Orange | `#F4A020` |
+| Text | Black | `#000000` |
+
+### Logo Placement
+
+**All generated documents must include the Volt Technologies logo:**
+
+| Document Type | Placement |
+|---------------|-----------|
+| Presentations | Title slide (centered), closing slide, or subtle footer |
+| Reports | Cover page header, document footer |
+| Web content | Header (top-left) or footer |
+| Single-page docs | Top-left header or bottom-center footer |
+
+### Logo Usage Rules
+- Maintain clear space around logo (minimum: height of "V")
+- Minimum width: 150px (full logo), 32px (mark only)
+- Use white text version on dark backgrounds
+- Never rotate, stretch, or add effects to the logo
+
+See `assets/logos/README.md` for complete logo guidelines.
+
+---
+
 ## Color Palette
 
 ### Primary Colors
@@ -334,11 +375,18 @@ border-radius: 4px;
 ## Quick Reference
 
 ```
+LOGO:
+  Full:       assets/logos/volt-logo-full.png
+  Mark:       assets/logos/volt-logo-mark.png
+  Placement:  Title slides, headers, footers (REQUIRED on all documents)
+
 COLORS:
   Black:      #000000
   White:      #FFFFFF
   Gold:       #D4AF37
   Light Gold: #F4CF67
+  Logo Yellow: #FFD93D
+  Logo Orange: #F4A020
 
 FONTS:
   Primary (Headings): Montserrat

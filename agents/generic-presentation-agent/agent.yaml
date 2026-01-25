@@ -1,6 +1,6 @@
 name: "Generic Presentation Agent"
-description: "Generates HTML slideshows from any content with a sleek black, white, and gold theme"
-version: "1.0.0"
+description: "Generates branded Volt Technologies HTML slideshows from any content"
+version: "1.1.0"
 model: "claude-sonnet-4-20250514"
 
 # Agent capabilities
@@ -8,6 +8,7 @@ capabilities:
   - content_analysis
   - html_generation
   - presentation_design
+  - brand_compliance
 
 # Input types this agent can process
 inputs:
@@ -23,10 +24,15 @@ inputs:
 # Output configuration
 output:
   format: "html"
-  description: "Self-contained HTML slideshow file"
+  description: "Self-contained branded HTML slideshow file"
 
 # Assets used by this agent
 assets:
+  brand:
+    - "assets/prompts/brand-guidelines.md"
+  logos:
+    - "assets/logos/volt-logo-full.png"
+    - "assets/logos/volt-logo-mark.png"
   templates:
     - "assets/templates/slideshow-base.html"
   styles:
@@ -38,6 +44,12 @@ settings:
     primary: "#000000"      # Black
     secondary: "#FFFFFF"    # White
     accent: "#D4AF37"       # Gold
+    logo_yellow: "#FFD93D"
+    logo_orange: "#F4A020"
+  typography:
+    heading: "Montserrat"
+    body: "Fira Sans"
+    code: "Fira Code"
   slide_defaults:
     transition: "fade"
     duration: "0.5s"
@@ -46,3 +58,4 @@ settings:
     - touch_swipe_navigation
     - progress_indicator
     - slide_counter
+    - volt_branding
