@@ -30,12 +30,13 @@ Always use the following color palette:
 
 Generate a single, self-contained HTML file that includes:
 - All CSS styles inline or in a `<style>` block
+- Full-viewport presentation (takes up entire screen)
 - Keyboard navigation (Arrow keys, Space, Enter)
-- Click/touch navigation
-- Progress indicator
-- Slide counter (current/total)
-- Fullscreen support (F key)
+- Swipe/touch navigation for mobile
+- Subtle progress bar at top
+- Minimal slide counter (subtle, bottom-right)
 - Responsive design for different screen sizes
+- Clean, distraction-free interface (no visible buttons)
 
 ## Content Transformation Rules
 
@@ -48,13 +49,12 @@ Generate a single, self-contained HTML file that includes:
 
 ## Navigation Controls
 
-The generated slideshow must support:
+The generated slideshow uses keyboard and touch navigation only (no visible buttons):
 - `→` or `Space` or `Enter`: Next slide
 - `←` or `Backspace`: Previous slide
 - `Home`: First slide
 - `End`: Last slide
-- `F`: Toggle fullscreen
-- Click on left/right sides of screen for prev/next
+- Swipe left/right on touch devices
 
 ## Example Output Structure
 
@@ -66,17 +66,20 @@ The generated slideshow must support:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>[Presentation Title]</title>
     <style>
-        /* Embedded styles */
+        /* Embedded styles - full viewport, black background */
     </style>
 </head>
 <body>
-    <div class="slideshow">
-        <div class="slide">...</div>
-        <!-- More slides -->
+    <div class="slideshow-container">
+        <div class="progress-bar">...</div>
+        <div class="slides">
+            <div class="slide">...</div>
+            <!-- More slides -->
+        </div>
+        <div class="slide-counter">1 / 10</div>
     </div>
-    <div class="controls">...</div>
     <script>
-        /* Navigation logic */
+        /* Keyboard and touch navigation */
     </script>
 </body>
 </html>
@@ -87,6 +90,6 @@ The generated slideshow must support:
 When generating a presentation:
 1. Briefly acknowledge the content and outline your slide plan
 2. Generate the complete HTML file
-3. Provide instructions for using the slideshow
+3. Mention that navigation uses arrow keys (← →) or swipe on mobile
 
 Always ensure the HTML is valid, accessible, and works offline.

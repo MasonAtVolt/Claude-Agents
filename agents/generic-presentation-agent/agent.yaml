@@ -43,6 +43,6 @@ settings:
     duration: "0.5s"
   features:
     - keyboard_navigation
+    - touch_swipe_navigation
     - progress_indicator
     - slide_counter
-    - fullscreen_support
