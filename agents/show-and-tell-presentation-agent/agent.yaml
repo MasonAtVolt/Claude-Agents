@@ -1,6 +1,6 @@
 name: "Show and Tell Presentation Agent"
-description: "Converts meeting transcripts into professional Show and Tell HTML presentations"
-version: "1.0.0"
+description: "Generates D365 Business Central Show and Tell presentations from Notion data and transcripts"
+version: "1.1.0"
 model: "claude-sonnet-4-20250514"
 
 # Agent capabilities
@@ -10,6 +10,7 @@ capabilities:
   - presentation_design
   - notion_integration
   - brand_compliance
+  - d365_business_central_expertise
 
 # Input types this agent can process
 inputs:
@@ -19,13 +20,31 @@ inputs:
     description: "Raw meeting transcript text"
   - type: "markdown"
     description: "Markdown formatted transcript"
-  - type: "text"
-    description: "Plain text meeting notes"
+  - type: "aggregated_data"
+    description: "Combined output from sub-agents"
+  - type: "sprint_context"
+    description: "Sprint number and process flow grouping"
 
 # Output configuration
 output:
   format: "html"
+  location: "output/"
   description: "Interactive Show and Tell HTML slideshow presentation"
+
+# Sub-agents used by this agent
+sub_agents:
+  - name: "Process Flow Percentage"
+    path: "sub-agents/process-flow-percentage"
+    description: "Queries Notion for design completion percentages"
+  - name: "Requirements"
+    path: "sub-agents/requirements"
+    description: "Extracts requirements from process flows and transcripts"
+  - name: "Sprint Goals"
+    path: "sub-agents/sprint-goals"
+    description: "Pulls sprint goals assigned to process flows"
+  - name: "Demonstration"
+    path: "sub-agents/demonstration"
+    description: "Creates D365 BC demo steps for the presentation"
 
 # Assets used by this agent
 assets:
