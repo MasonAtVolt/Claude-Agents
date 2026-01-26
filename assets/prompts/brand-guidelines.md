@@ -47,6 +47,17 @@ The Volt Technologies logo consists of a stylized lightning bolt icon paired wit
 - Use white text version on dark backgrounds
 - Never rotate, stretch, or add effects to the logo
 
+### CRITICAL - Logo Implementation
+**ALWAYS use the actual image files. NEVER recreate the logo.**
+
+- **ALWAYS** use `<img src="assets/logos/volt-logo-full.png">` or `volt-logo-mark.png`
+- **NEVER** generate inline SVG graphics to represent the logo
+- **NEVER** use emoji (⚡) as a substitute for the logo
+- **NEVER** create CSS shapes, Unicode characters, or text-based logo recreations
+- **NEVER** attempt to draw or code the lightning bolt icon
+
+The PNG files are the official brand assets. Use them directly via `<img>` tags.
+
 See `assets/logos/README.md` for complete logo guidelines.
 
 ---

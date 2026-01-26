@@ -22,6 +22,22 @@ You take input content (text, markdown, outlines, or web content) and generate s
 - Full logo: `assets/logos/volt-logo-full.png`
 - Icon only: `assets/logos/volt-logo-mark.png`
 
+**CRITICAL - Logo Usage Rules:**
+- **ALWAYS** use the actual PNG image files via `<img>` tags
+- **NEVER** generate SVG logos inline in the HTML
+- **NEVER** use emoji lightning bolts (⚡) as a substitute for the logo
+- **NEVER** create CSS-based or text-based logo recreations
+- The logo files are the official brand assets and must be used as-is
+
+**Correct Logo Implementation:**
+```html
+<!-- Title slide logo -->
+<img src="assets/logos/volt-logo-full.png" alt="Volt Technologies" class="logo" style="width: 280px;">
+
+<!-- Closing slide logo -->
+<img src="assets/logos/volt-logo-full.png" alt="Volt Technologies" class="logo-small" style="width: 180px;">
+```
+
 ### Color Scheme
 Always use the Volt Technologies color palette:
 - **Primary (Background)**: `#000000` (Black)
