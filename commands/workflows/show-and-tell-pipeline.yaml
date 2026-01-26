@@ -1,0 +1,120 @@
+name: "Show and Tell Pipeline"
+description: "Orchestrates all sub-agents to generate a complete Show and Tell presentation"
+version: "1.0.0"
+
+overview: |
+  This workflow chains together multiple specialized agents to produce a complete
+  Show and Tell presentation for D365 Business Central sprint reviews.
+
+  Pipeline flow:
+  1. Process Flow Percentage Agent → Queries Notion for completion %
+  2. Requirements Agent → Extracts requirements from transcripts
+  3. Sprint Goals Agent → Pulls sprint goals for process flows
+  4. Demonstration Agent → Creates demo steps (uses data from steps 1-3)
+  5. Show and Tell Presentation Agent → Generates final HTML presentation
+
+inputs:
+  - name: "sprint"
+    description: "Sprint identifier (e.g., 'Sprint 5')"
+    type: "string"
+    required: true
+
+  - name: "process_flow_grouping"
+    description: "Category of process flows (e.g., 'Order to Cash')"
+    type: "string"
+    required: true
+
+  - name: "transcript_source"
+    description: "Notion page ID or path to transcript"
+    type: "string"
+    required: true
+
+  - name: "notion_database_ids"
+    description: "Database IDs for Notion queries"
+    type: "object"
+    required: true
+
+mcp_servers:
+  - "mcp/servers/notion"
+
+steps:
+  - name: "get_process_flow_percentages"
+    agent: "agents/show-and-tell-presentation-agent/sub-agents/process-flow-percentage"
+    description: "Query Notion for design completion percentages"
+    inputs:
+      sprint_identifier: "{{inputs.sprint}}"
+      process_flow_grouping: "{{inputs.process_flow_grouping}}"
+      notion_database_id: "{{inputs.notion_database_ids.process_flows_db}}"
+    outputs:
+      - process_flows
+      - overall_completion
+    timeout: "60s"
+
+  - name: "extract_requirements"
+    agent: "agents/show-and-tell-presentation-agent/sub-agents/requirements"
+    description: "Analyze transcript and extract D365 BC requirements"
+    inputs:
+      process_flows: "{{steps.get_process_flow_percentages.outputs.process_flows}}"
+      transcript_source: "{{inputs.transcript_source}}"
+    outputs:
+      - requirements
+    depends_on: ["get_process_flow_percentages"]
+    timeout: "120s"
+
+  - name: "get_sprint_goals"
+    agent: "agents/show-and-tell-presentation-agent/sub-agents/sprint-goals"
+    description: "Pull sprint goals assigned to process flows"
+    inputs:
+      sprint_identifier: "{{inputs.sprint}}"
+      process_flows: "{{steps.get_process_flow_percentages.outputs.process_flows}}"
+    outputs:
+      - sprint_goals
+    depends_on: ["get_process_flow_percentages"]
+    timeout: "60s"
+
+  - name: "generate_demo_steps"
+    agent: "agents/show-and-tell-presentation-agent/sub-agents/demonstration"
+    description: "Create D365 BC demonstration scripts"
+    inputs:
+      process_flows: "{{steps.get_process_flow_percentages.outputs.process_flows}}"
+      requirements: "{{steps.extract_requirements.outputs.requirements}}"
+      sprint_goals: "{{steps.get_sprint_goals.outputs.sprint_goals}}"
+    outputs:
+      - demonstrations
+    depends_on:
+      - "extract_requirements"
+      - "get_sprint_goals"
+    timeout: "180s"
+
+  - name: "generate_presentation"
+    agent: "agents/show-and-tell-presentation-agent"
+    description: "Create the final Show and Tell HTML presentation"
+    inputs:
+      sprint: "{{inputs.sprint}}"
+      process_flow_grouping: "{{inputs.process_flow_grouping}}"
+      process_flow_data: "{{steps.get_process_flow_percentages.outputs}}"
+      requirements_data: "{{steps.extract_requirements.outputs}}"
+      sprint_goals_data: "{{steps.get_sprint_goals.outputs}}"
+      demonstration_data: "{{steps.generate_demo_steps.outputs}}"
+    outputs:
+      - presentation_file
+    depends_on:
+      - "generate_demo_steps"
+    timeout: "300s"
+
+outputs:
+  presentation:
+    source: "{{steps.generate_presentation.outputs.presentation_file}}"
+    location: "output/"
+    filename_pattern: "show-and-tell-{{inputs.sprint | slugify}}-{{date}}.html"
+
+notes: |
+  To run this pipeline:
+
+  ```
+  claude "Run the show-and-tell-pipeline workflow for Sprint 5,
+          Order to Cash process flows,
+          using transcript from Notion page abc123"
+  ```
+
+  Output: output/show-and-tell-sprint-5-[date].html

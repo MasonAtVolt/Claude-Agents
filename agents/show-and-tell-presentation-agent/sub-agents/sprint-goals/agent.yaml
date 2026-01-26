@@ -1,0 +1,40 @@
+name: "Sprint Goals Agent"
+description: "Retrieves sprint goals from Notion that are assigned to specific process flows"
+version: "1.0.0"
+model: "claude-sonnet-4-20250514"
+
+capabilities:
+  - notion_query
+  - goal_extraction
+  - sprint_planning_analysis
+  - process_flow_mapping
+
+inputs:
+  - type: "sprint_identifier"
+    description: "Sprint number or name"
+  - type: "process_flows"
+    description: "List of process flows being covered"
+  - type: "notion_database_id"
+    description: "Notion database containing sprint goals"
+
+output:
+  format: "json"
+  schema:
+    sprint_goals:
+      - id: "string"
+        title: "string"
+        description: "string"
+        process_flows: "array"
+        status: "string"
+        acceptance_criteria: "array"
+
+mcp_servers:
+  - "mcp/servers/notion"
+
+settings:
+  goal_statuses:
+    - "Not Started"
+    - "In Progress"
+    - "Complete"
+    - "Blocked"
+    - "Deferred"

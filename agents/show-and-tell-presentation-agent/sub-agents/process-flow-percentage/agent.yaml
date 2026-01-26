@@ -1,0 +1,41 @@
+name: "Process Flow Percentage Agent"
+description: "Queries Notion for design completion percentages for process flows in a given sprint"
+version: "1.0.0"
+model: "claude-sonnet-4-20250514"
+
+capabilities:
+  - notion_query
+  - data_extraction
+  - percentage_calculation
+  - sprint_analysis
+
+inputs:
+  - type: "sprint_identifier"
+    description: "Sprint number or name to query"
+  - type: "process_flow_grouping"
+    description: "The grouping/category of process flows being covered"
+  - type: "notion_database_id"
+    description: "Notion database ID containing process flow data"
+
+output:
+  format: "json"
+  schema:
+    process_flows:
+      - name: "string"
+        category: "string"
+        design_completion_percentage: "number"
+        status: "string"
+    overall_completion: "number"
+    sprint_target: "number"
+
+mcp_servers:
+  - "mcp/servers/notion"
+
+settings:
+  notion:
+    required_fields:
+      - "Process Flow Name"
+      - "Design Completion %"
+      - "Sprint"
+      - "Category"
+      - "Status"

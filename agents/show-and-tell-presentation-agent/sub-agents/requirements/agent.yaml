@@ -1,0 +1,49 @@
+name: "Requirements Agent"
+description: "Extracts D365 Business Central requirements from process flows and shadowing meeting transcripts"
+version: "1.0.0"
+model: "claude-sonnet-4-20250514"
+
+capabilities:
+  - transcript_analysis
+  - requirements_extraction
+  - d365_business_central_expertise
+  - notion_integration
+  - process_flow_mapping
+
+inputs:
+  - type: "process_flows"
+    description: "List of process flows being covered in the meeting"
+  - type: "transcript"
+    description: "Shadowing meeting transcript from Notion"
+  - type: "notion_database_id"
+    description: "Notion database containing transcripts"
+
+output:
+  format: "json"
+  schema:
+    requirements:
+      - id: "string"
+        title: "string"
+        description: "string"
+        process_flow: "string"
+        category: "string"
+        priority: "string"
+        d365_module: "string"
+
+mcp_servers:
+  - "mcp/servers/notion"
+
+settings:
+  d365_modules:
+    - "Financial Management"
+    - "Sales & Receivables"
+    - "Purchases & Payables"
+    - "Inventory Management"
+    - "Warehouse Management"
+    - "Manufacturing"
+  requirement_categories:
+    - "Functional"
+    - "Technical"
+    - "Integration"
+    - "Reporting"
+    - "Security"

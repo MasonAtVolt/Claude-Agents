@@ -1,0 +1,44 @@
+name: "Demonstration Agent"
+description: "Creates D365 Business Central demo steps for Show and Tell presentations"
+version: "1.0.0"
+model: "claude-sonnet-4-20250514"
+
+capabilities:
+  - d365_business_central_expertise
+  - demo_script_generation
+  - process_flow_analysis
+  - requirements_to_demo_mapping
+
+inputs:
+  - type: "process_flows"
+    description: "Process flows to demonstrate"
+  - type: "requirements"
+    description: "Requirements from Requirements Agent"
+  - type: "sprint_goals"
+    description: "Sprint goals from Sprint Goals Agent"
+  - type: "completion_percentage"
+    description: "Design completion percentage for each process flow"
+
+output:
+  format: "json"
+  schema:
+    demonstrations:
+      - id: "string"
+        title: "string"
+        business_context: "string"
+        demo_steps: "array"
+        expected_outcome: "string"
+
+settings:
+  d365_navigation:
+    role_centers:
+      - "Business Manager"
+      - "Sales Order Processor"
+      - "Purchasing Agent"
+      - "Accountant"
+    common_pages:
+      - "Sales Orders"
+      - "Purchase Orders"
+      - "Customers"
+      - "Items"
+      - "General Journals"
