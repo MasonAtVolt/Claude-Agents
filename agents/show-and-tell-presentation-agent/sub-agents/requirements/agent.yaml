@@ -1,6 +1,6 @@
 name: "Requirements Agent"
-description: "Extracts D365 Business Central requirements from process flows and shadowing meeting transcripts"
-version: "1.0.0"
+description: "Extracts D365 Business Central requirements from transcripts and maps them to project deliverables including migrations, integrations, reports, and extensions"
+version: "2.0.0"
 model: "claude-sonnet-4-20250514"
 
 capabilities:
@@ -9,26 +9,53 @@ capabilities:
   - d365_business_central_expertise
   - notion_integration
   - process_flow_mapping
+  - waterfall_task_mapping
+  - migration_requirement_identification
+  - integration_requirement_identification
+  - report_requirement_identification
+  - issue_correlation
+  - gap_analysis
 
 inputs:
   - type: "process_flows"
     description: "List of process flows being covered in the meeting"
-  - type: "transcript"
-    description: "Shadowing meeting transcript from Notion"
-  - type: "notion_database_id"
-    description: "Notion database containing transcripts"
+  - type: "transcript_source"
+    description: "Shadowing meeting transcript from Notion (page ID or content)"
+  - type: "project_context"
+    description: "Project context from Project Context Agent"
+  - type: "waterfall_tasks"
+    description: "Waterfall tasks (migrations, integrations, reports, extensions) from Notion"
+  - type: "issues"
+    description: "Open issues from Notion that may relate to requirements"
 
 output:
   format: "json"
   schema:
+    extraction_context:
+      transcript_source: "string"
+      process_flow_category: "string"
+      sprint: "string"
     requirements:
       - id: "string"
         title: "string"
         description: "string"
-        process_flow: "string"
+        process_flow: "object"
         category: "string"
         priority: "string"
-        d365_module: "string"
+        d365_module: "object"
+        d365_configuration: "object"
+        source_quote: "string"
+        demo_relevance: "object"
+        related_waterfall_tasks: "object"
+        blocking_issues: "array"
+        acceptance_criteria: "array"
+    requirement_to_task_mapping:
+      migrations: "array"
+      integrations: "array"
+      reports: "array"
+      extensions: "array"
+    gaps_identified: "array"
+    requirements_summary: "object"
 
 mcp_servers:
   - "mcp/servers/notion"
@@ -41,9 +68,41 @@ settings:
     - "Inventory Management"
     - "Warehouse Management"
     - "Manufacturing"
+    - "Service Management"
+    - "Project Management"
+    - "Human Resources"
   requirement_categories:
     - "Functional"
     - "Technical"
     - "Integration"
     - "Reporting"
+    - "Migration"
     - "Security"
+  waterfall_task_types:
+    - "Migration"
+    - "Integration"
+    - "Report"
+    - "Extension"
+  signal_phrases:
+    functional:
+      - "We need to"
+      - "We have to"
+      - "It's important that"
+      - "Audit requires"
+      - "Business rule"
+    integration:
+      - "We get this from"
+      - "This goes to"
+      - "Connected to"
+      - "Sync with"
+      - "Interface with"
+    migration:
+      - "Currently in"
+      - "Need to bring over"
+      - "Historical data"
+      - "Legacy system"
+    reporting:
+      - "We need a report"
+      - "Visibility into"
+      - "Dashboard"
+      - "Analytics"
