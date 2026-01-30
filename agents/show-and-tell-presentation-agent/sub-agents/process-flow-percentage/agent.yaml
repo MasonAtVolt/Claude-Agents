@@ -1,7 +1,7 @@
 name: "Process Flow Percentage Agent"
 description: "Queries Notion for design completion percentages for process flows in a given sprint"
 version: "1.0.0"
-model: "claude-sonnet-4-20250514"
+model: "claude-opus-4-5-20251101"
 
 capabilities:
   - notion_query

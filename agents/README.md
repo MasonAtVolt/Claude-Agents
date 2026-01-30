@@ -29,7 +29,7 @@ description: "Brief description of what this agent does"
 version: "1.0.0"
 
 # Model configuration
-model: "claude-sonnet-4-20250514"  # or claude-opus-4-5-20251101
+model: "claude-opus-4-5-20251101"
 
 # Skills this agent uses (references to /skills directory)
 skills:

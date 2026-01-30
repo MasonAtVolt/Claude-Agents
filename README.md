@@ -50,7 +50,7 @@ Create `agents/my-agent/agent.yaml`:
 name: "My Agent"
 description: "Description of what this agent does"
 version: "1.0.0"
-model: "claude-sonnet-4-20250514"
+model: "claude-opus-4-5-20251101"
 skills:
   - core/file-operations
 ```
