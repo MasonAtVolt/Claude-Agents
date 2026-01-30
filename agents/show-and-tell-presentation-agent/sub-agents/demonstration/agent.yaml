@@ -1,6 +1,6 @@
 name: "Demonstration Agent"
-description: "Creates D365 Business Central demo steps for Show and Tell presentations"
-version: "1.0.0"
+description: "Creates comprehensive D365 Business Central demo scripts grounded in project context including migrations, integrations, reports, and issues"
+version: "2.0.0"
 model: "claude-sonnet-4-20250514"
 
 capabilities:
@@ -8,37 +8,134 @@ capabilities:
   - demo_script_generation
   - process_flow_analysis
   - requirements_to_demo_mapping
+  - migration_context_integration
+  - integration_touchpoint_identification
+  - report_demo_inclusion
+  - issue_navigation
+  - fallback_planning
 
 inputs:
+  - type: "sprint_identifier"
+    description: "Sprint number or name"
   - type: "process_flows"
-    description: "Process flows to demonstrate"
+    description: "Process flows to demonstrate with completion percentages"
+  - type: "scenarios"
+    description: "Detailed scenarios within each process flow"
   - type: "requirements"
     description: "Requirements from Requirements Agent"
   - type: "sprint_goals"
     description: "Sprint goals from Sprint Goals Agent"
-  - type: "completion_percentage"
-    description: "Design completion percentage for each process flow"
+  - type: "project_context"
+    description: "Full project context from Project Context Agent"
+  - type: "waterfall_tasks"
+    description: "Migrations, integrations, reports, extensions status"
+  - type: "blocking_issues"
+    description: "Issues that may block demo functionality"
+  - type: "milestone_status"
+    description: "Milestone alignment for demo prioritization"
 
 output:
   format: "json"
   schema:
+    demo_context:
+      sprint: "string"
+      process_flow_grouping: "string"
+      show_and_tell_date: "string"
     demonstrations:
       - id: "string"
         title: "string"
+        duration_minutes: "number"
+        process_flow: "object"
         business_context: "string"
+        requirements_addressed: "array"
+        sprint_goals_demonstrated: "array"
+        d365_module: "string"
+        role_center: "string"
+        prerequisites: "object"
         demo_steps: "array"
-        expected_outcome: "string"
+        integration_touchpoints: "array"
+        related_reports: "array"
+        fallback_plans: "array"
+        expected_outcome: "object"
+        stakeholder_message: "string"
+    demo_sequence: "array"
+    integration_touchpoints: "array"
+    migration_references: "array"
+    report_demos: "array"
+    fallback_plans: "array"
+    total_demo_time_minutes: "number"
 
 settings:
   d365_navigation:
     role_centers:
-      - "Business Manager"
-      - "Sales Order Processor"
-      - "Purchasing Agent"
-      - "Accountant"
-    common_pages:
-      - "Sales Orders"
-      - "Purchase Orders"
-      - "Customers"
-      - "Items"
-      - "General Journals"
+      - name: "Business Manager"
+        typical_user: "Executive, Owner"
+        primary_functions: ["KPIs", "Approvals", "Overview"]
+      - name: "Accountant"
+        typical_user: "Controller, Staff Accountant"
+        primary_functions: ["GL", "Reporting", "Reconciliation"]
+      - name: "Sales Order Processor"
+        typical_user: "Sales Admin, CSR"
+        primary_functions: ["Orders", "Quotes", "Customers"]
+      - name: "Purchasing Agent"
+        typical_user: "Buyer, Procurement"
+        primary_functions: ["POs", "Vendors", "Requisitions"]
+      - name: "Warehouse Worker"
+        typical_user: "Warehouse Staff"
+        primary_functions: ["Picks", "Put-aways", "Movements"]
+      - name: "Project Manager"
+        typical_user: "PM"
+        primary_functions: ["Jobs", "Resources", "Timesheets"]
+      - name: "Service Dispatcher"
+        typical_user: "Service Manager"
+        primary_functions: ["Service Orders", "Scheduling"]
+    module_paths:
+      financial_management:
+        - "Chart of Accounts"
+        - "General Journals"
+        - "Bank Reconciliation"
+        - "Financial Reports"
+      sales_receivables:
+        - "Customers"
+        - "Sales Quotes"
+        - "Sales Orders"
+        - "Sales Invoices"
+        - "Posted Documents"
+      purchases_payables:
+        - "Vendors"
+        - "Purchase Requisitions"
+        - "Purchase Orders"
+        - "Purchase Invoices"
+        - "Payment Journals"
+      inventory_warehouse:
+        - "Items"
+        - "Locations"
+        - "Transfer Orders"
+        - "Warehouse Picks"
+        - "Physical Inventory"
+      manufacturing:
+        - "Production BOMs"
+        - "Routings"
+        - "Production Orders"
+        - "Planning Worksheets"
+  completion_to_demo_mapping:
+    - range: "0-25"
+      scope: "Navigation & Setup"
+      show: ["Pages", "Master data", "Basic navigation"]
+      skip: ["Transactions", "Posting"]
+    - range: "26-50"
+      scope: "Document Creation"
+      show: ["Create documents", "Field defaults", "Lookups"]
+      skip: ["Posting", "Workflows"]
+    - range: "51-75"
+      scope: "Core Processing"
+      show: ["Posting", "Basic validations", "Partial workflows"]
+      skip: ["Complex scenarios", "Edge cases"]
+    - range: "76-99"
+      scope: "Full Workflows"
+      show: ["End-to-end", "Validations", "Approvals"]
+      skip: ["Only known open issues"]
+    - range: "100"
+      scope: "Production Ready"
+      show: ["Everything including edge cases"]
+      skip: ["Nothing"]

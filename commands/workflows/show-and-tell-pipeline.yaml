@@ -1,28 +1,51 @@
 name: "Show and Tell Pipeline"
-description: "Orchestrates all sub-agents to generate a complete Show and Tell presentation"
-version: "1.0.0"
+description: "Orchestrates all sub-agents to generate a complete Show and Tell presentation for D365 Business Central implementations"
+version: "2.0.0"
 
 overview: |
   This workflow chains together multiple specialized agents to produce a complete
-  Show and Tell presentation for D365 Business Central sprint reviews.
+  Show and Tell presentation for Dynamics 365 Business Central sprint reviews.
+
+  The pipeline queries the Notion project template structure to gather comprehensive
+  context including:
+  - Process Flows (Procure to Pay, Opportunity to Cash, Issue to Complete, etc.)
+  - Waterfall Tasks (Migrations, Integrations, Reports, Extensions)
+  - Project Definition (Milestones, Sprints, Project Members)
+  - Open Issues (Blocking and non-blocking)
+  - Resources and documentation links
 
   Pipeline flow:
-  1. Process Flow Percentage Agent → Queries Notion for completion %
-  2. Requirements Agent → Extracts requirements from transcripts
-  3. Sprint Goals Agent → Pulls sprint goals for process flows
-  4. Demonstration Agent → Creates demo steps (uses data from steps 1-3)
-  5. Show and Tell Presentation Agent → Generates final HTML presentation
+  1. Project Context Agent → Queries Notion for full project context
+  2. Process Flow Percentage Agent → Queries completion % with scenario details
+  3. Requirements Agent → Extracts requirements grounded in project context
+  4. Sprint Goals Agent → Pulls goals with milestone and issue context
+  5. Demonstration Agent → Creates demo scripts using full project context
+  6. Show and Tell Presentation Agent → Generates final HTML presentation
 
 inputs:
+  - name: "project_name"
+    description: "Name of the D365 BC implementation project"
+    type: "string"
+    required: true
+
   - name: "sprint"
     description: "Sprint identifier (e.g., 'Sprint 5')"
     type: "string"
     required: true
 
   - name: "process_flow_grouping"
-    description: "Category of process flows (e.g., 'Order to Cash')"
+    description: "Category of process flows (e.g., 'Procure to Pay', 'Opportunity to Cash')"
     type: "string"
     required: true
+    enum:
+      - "Procure to Pay"
+      - "Opportunity to Cash"
+      - "Issue to Complete"
+      - "Planning"
+      - "Transporting"
+      - "Recording"
+      - "Managing"
+      - "Isolated"
 
   - name: "transcript_source"
     description: "Notion page ID or path to transcript"
@@ -33,71 +56,166 @@ inputs:
     description: "Database IDs for Notion queries"
     type: "object"
     required: true
+    schema:
+      process_flows_db:
+        description: "Process Flows database ID"
+        type: "string"
+        required: true
+      waterfall_tasks_db:
+        description: "Waterfall Tasks database ID (Migrations, Integrations, Reports)"
+        type: "string"
+        required: true
+      project_definition_db:
+        description: "Project Definition database ID (Milestones, Sprints)"
+        type: "string"
+        required: true
+      issues_db:
+        description: "Issues database ID"
+        type: "string"
+        required: true
+      sprint_goals_db:
+        description: "Sprint Goals database ID"
+        type: "string"
+        required: true
+      resources_db:
+        description: "Resources database ID"
+        type: "string"
+        required: false
 
 mcp_servers:
   - "mcp/servers/notion"
 
 steps:
+  # Step 1: Gather comprehensive project context from Notion
+  - name: "get_project_context"
+    agent: "agents/show-and-tell-presentation-agent/sub-agents/project-context"
+    description: "Query Notion for complete D365 BC project context including process flows, migrations, integrations, reports, milestones, and issues"
+    inputs:
+      project_name: "{{inputs.project_name}}"
+      sprint_identifier: "{{inputs.sprint}}"
+      process_flow_grouping: "{{inputs.process_flow_grouping}}"
+      notion_workspace_ids:
+        process_flows_db: "{{inputs.notion_database_ids.process_flows_db}}"
+        waterfall_tasks_db: "{{inputs.notion_database_ids.waterfall_tasks_db}}"
+        project_definition_db: "{{inputs.notion_database_ids.project_definition_db}}"
+        issues_db: "{{inputs.notion_database_ids.issues_db}}"
+        milestones_db: "{{inputs.notion_database_ids.project_definition_db}}"
+    outputs:
+      - project_context
+      - process_flows_overview
+      - waterfall_tasks
+      - milestones
+      - issues
+      - resources
+    timeout: "120s"
+
+  # Step 2: Get detailed process flow percentages with scenarios
   - name: "get_process_flow_percentages"
     agent: "agents/show-and-tell-presentation-agent/sub-agents/process-flow-percentage"
-    description: "Query Notion for design completion percentages"
+    description: "Query Notion for design completion percentages with scenario-level detail"
     inputs:
       sprint_identifier: "{{inputs.sprint}}"
       process_flow_grouping: "{{inputs.process_flow_grouping}}"
       notion_database_id: "{{inputs.notion_database_ids.process_flows_db}}"
+      project_context: "{{steps.get_project_context.outputs.project_context}}"
     outputs:
       - process_flows
+      - scenarios
       - overall_completion
+      - demo_readiness
+    depends_on: ["get_project_context"]
     timeout: "60s"
 
+  # Step 3: Extract requirements grounded in project context
   - name: "extract_requirements"
     agent: "agents/show-and-tell-presentation-agent/sub-agents/requirements"
-    description: "Analyze transcript and extract D365 BC requirements"
+    description: "Analyze transcript and extract D365 BC requirements mapped to project deliverables"
     inputs:
       process_flows: "{{steps.get_process_flow_percentages.outputs.process_flows}}"
       transcript_source: "{{inputs.transcript_source}}"
+      project_context: "{{steps.get_project_context.outputs.project_context}}"
+      waterfall_tasks: "{{steps.get_project_context.outputs.waterfall_tasks}}"
+      issues: "{{steps.get_project_context.outputs.issues}}"
     outputs:
       - requirements
-    depends_on: ["get_process_flow_percentages"]
+      - requirement_to_task_mapping
+      - gaps_identified
+    depends_on:
+      - "get_project_context"
+      - "get_process_flow_percentages"
     timeout: "120s"
 
+  # Step 4: Get sprint goals with milestone and issue context
   - name: "get_sprint_goals"
     agent: "agents/show-and-tell-presentation-agent/sub-agents/sprint-goals"
-    description: "Pull sprint goals assigned to process flows"
+    description: "Pull sprint goals with milestone alignment and issue tracking"
     inputs:
       sprint_identifier: "{{inputs.sprint}}"
       process_flows: "{{steps.get_process_flow_percentages.outputs.process_flows}}"
+      notion_database_ids:
+        sprint_goals_db: "{{inputs.notion_database_ids.sprint_goals_db}}"
+        milestones_db: "{{inputs.notion_database_ids.project_definition_db}}"
+        issues_db: "{{inputs.notion_database_ids.issues_db}}"
+        waterfall_tasks_db: "{{inputs.notion_database_ids.waterfall_tasks_db}}"
+      project_context: "{{steps.get_project_context.outputs.project_context}}"
+      milestones: "{{steps.get_project_context.outputs.milestones}}"
+      issues: "{{steps.get_project_context.outputs.issues}}"
     outputs:
       - sprint_goals
-    depends_on: ["get_process_flow_percentages"]
-    timeout: "60s"
+      - milestone_status
+      - blocking_issues
+      - waterfall_task_status
+      - sprint_health
+    depends_on:
+      - "get_project_context"
+      - "get_process_flow_percentages"
+    timeout: "90s"
 
+  # Step 5: Generate demonstration scripts using full project context
   - name: "generate_demo_steps"
     agent: "agents/show-and-tell-presentation-agent/sub-agents/demonstration"
-    description: "Create D365 BC demonstration scripts"
+    description: "Create D365 BC demonstration scripts grounded in migrations, integrations, reports, and issues"
     inputs:
+      sprint_identifier: "{{inputs.sprint}}"
       process_flows: "{{steps.get_process_flow_percentages.outputs.process_flows}}"
+      scenarios: "{{steps.get_process_flow_percentages.outputs.scenarios}}"
       requirements: "{{steps.extract_requirements.outputs.requirements}}"
       sprint_goals: "{{steps.get_sprint_goals.outputs.sprint_goals}}"
+      project_context: "{{steps.get_project_context.outputs.project_context}}"
+      waterfall_tasks: "{{steps.get_project_context.outputs.waterfall_tasks}}"
+      blocking_issues: "{{steps.get_sprint_goals.outputs.blocking_issues}}"
+      milestone_status: "{{steps.get_sprint_goals.outputs.milestone_status}}"
     outputs:
       - demonstrations
+      - demo_sequence
+      - integration_touchpoints
+      - migration_references
+      - report_demos
+      - fallback_plans
     depends_on:
       - "extract_requirements"
       - "get_sprint_goals"
     timeout: "180s"
 
+  # Step 6: Generate the final HTML presentation
   - name: "generate_presentation"
     agent: "agents/show-and-tell-presentation-agent"
-    description: "Create the final Show and Tell HTML presentation"
+    description: "Create the final Show and Tell HTML presentation with full project context"
     inputs:
+      project_name: "{{inputs.project_name}}"
       sprint: "{{inputs.sprint}}"
       process_flow_grouping: "{{inputs.process_flow_grouping}}"
+      project_context: "{{steps.get_project_context.outputs}}"
       process_flow_data: "{{steps.get_process_flow_percentages.outputs}}"
       requirements_data: "{{steps.extract_requirements.outputs}}"
       sprint_goals_data: "{{steps.get_sprint_goals.outputs}}"
       demonstration_data: "{{steps.generate_demo_steps.outputs}}"
+      milestone_status: "{{steps.get_sprint_goals.outputs.milestone_status}}"
+      blocking_issues: "{{steps.get_sprint_goals.outputs.blocking_issues}}"
+      waterfall_tasks: "{{steps.get_project_context.outputs.waterfall_tasks}}"
     outputs:
       - presentation_file
+      - presentation_metadata
     depends_on:
       - "generate_demo_steps"
     timeout: "300s"
@@ -106,15 +224,92 @@ outputs:
   presentation:
     source: "{{steps.generate_presentation.outputs.presentation_file}}"
     location: "output/"
-    filename_pattern: "show-and-tell-{{inputs.sprint | slugify}}-{{date}}.html"
+    filename_pattern: "show-and-tell-{{inputs.project_name | slugify}}-{{inputs.sprint | slugify}}-{{date}}.html"
+
+  metadata:
+    source: "{{steps.generate_presentation.outputs.presentation_metadata}}"
+    location: "output/"
+    filename_pattern: "show-and-tell-{{inputs.sprint | slugify}}-metadata.json"
 
 notes: |
-  To run this pipeline:
+  ## D365 Business Central Show and Tell Pipeline
+
+  This pipeline creates comprehensive Show and Tell presentations grounded in your
+  Notion project template structure.
+
+  ### Notion Project Structure Expected
+
+  The pipeline expects your Notion workspace to follow this structure:
 
   ```
-  claude "Run the show-and-tell-pipeline workflow for Sprint 5,
-          Order to Cash process flows,
-          using transcript from Notion page abc123"
+  Project Home
+  ├── Process Flows
+  │   ├── Procure to Pay
+  │   ├── Opportunity to Cash
+  │   ├── Issue to Complete
+  │   ├── Planning
+  │   ├── Transporting
+  │   ├── Recording
+  │   ├── Managing
+  │   └── Isolated
+  ├── Waterfall Tasks
+  │   ├── Extensions
+  │   ├── Integrations
+  │   ├── Migrations
+  │   ├── Reports
+  │   └── Issues
+  ├── Project Definition
+  │   ├── Milestones
+  │   ├── Sprints
+  │   └── Project Members
+  └── Resources
+      ├── Process Flows (link)
+      ├── Waterfall Tasks (link)
+      ├── Project Definition (link)
+      ├── Sprint Goals (link)
+      └── Settings
   ```
 
-  Output: output/show-and-tell-sprint-5-[date].html
+  ### Running the Pipeline
+
+  ```bash
+  claude "Run the show-and-tell-pipeline workflow for:
+    - Project: White and Warren D365 BC Implementation
+    - Sprint: Sprint 5
+    - Process Flow Grouping: Procure to Pay
+    - Transcript: Notion page abc123
+    - Database IDs:
+      - Process Flows: xyz789
+      - Waterfall Tasks: def456
+      - Project Definition: ghi012
+      - Issues: jkl345
+      - Sprint Goals: mno678"
+  ```
+
+  ### Output Files
+
+  - `output/show-and-tell-white-and-warren-sprint-5-2024-01-19.html` - Interactive presentation
+  - `output/show-and-tell-sprint-5-metadata.json` - Structured data for reference
+
+  ### What Gets Included
+
+  The presentation will include:
+
+  1. **Process Flow Progress** - Visual completion bars with scenario breakdown
+  2. **Requirements** - Extracted from transcripts, mapped to deliverables
+  3. **Sprint Goals** - With milestone alignment and acceptance criteria
+  4. **Demo Scripts** - Step-by-step D365 BC demonstrations
+  5. **Migration Status** - Data migration progress relevant to demos
+  6. **Integration Points** - Where external systems connect
+  7. **Report Previews** - Custom reports being developed
+  8. **Open Issues** - Blocking items and risks
+  9. **Action Items** - Homework for client and team
+
+  ### Troubleshooting
+
+  If the pipeline fails:
+
+  1. Verify all Notion database IDs are correct
+  2. Ensure the Notion MCP server has read access to all databases
+  3. Check that process flow categories match expected values
+  4. Verify transcript page exists and has content

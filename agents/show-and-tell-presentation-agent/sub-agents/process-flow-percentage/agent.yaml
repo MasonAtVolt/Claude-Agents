@@ -1,21 +1,37 @@
 name: "Process Flow Percentage Agent"
-description: "Queries Notion for design completion percentages for process flows in a given sprint"
-version: "1.0.0"
+description: "Queries Notion for design completion percentages and scenario details for D365 BC process flows"
+version: "2.0.0"
 model: "claude-sonnet-4-20250514"
 
 capabilities:
   - notion_query
+  - notion_database_query
   - data_extraction
   - percentage_calculation
   - sprint_analysis
+  - d365_bc_process_mapping
+  - scenario_extraction
+  - demo_readiness_assessment
 
 inputs:
   - type: "sprint_identifier"
     description: "Sprint number or name to query"
   - type: "process_flow_grouping"
-    description: "The grouping/category of process flows being covered"
+    description: "The grouping/category of process flows (Procure to Pay, Opportunity to Cash, etc.)"
+    enum:
+      - "Procure to Pay"
+      - "Opportunity to Cash"
+      - "Issue to Complete"
+      - "Planning"
+      - "Transporting"
+      - "Recording"
+      - "Managing"
+      - "Isolated"
   - type: "notion_database_id"
     description: "Notion database ID containing process flow data"
+  - type: "project_context"
+    description: "Optional project context from Project Context Agent"
+    required: false
 
 output:
   format: "json"
@@ -25,8 +41,20 @@ output:
         category: "string"
         design_completion_percentage: "number"
         status: "string"
+        scenarios: "array"
+        functional_areas: "array"
+        d365_modules: "object"
+        demo_readiness: "object"
+    scenarios:
+      - name: "string"
+        process_flow: "string"
+        status: "string"
+        d365_path: "string"
     overall_completion: "number"
+    scenario_breakdown: "object"
+    demo_readiness: "object"
     sprint_target: "number"
+    related_waterfall_tasks: "object"
 
 mcp_servers:
   - "mcp/servers/notion"
@@ -39,3 +67,25 @@ settings:
       - "Sprint"
       - "Category"
       - "Status"
+    optional_fields:
+      - "Scenarios"
+      - "Functional Areas"
+      - "D365 Module"
+      - "Demo Ready"
+  process_flow_categories:
+    - name: "Procure to Pay"
+      d365_modules: ["Purchasing", "A/P", "Inventory", "Banking"]
+    - name: "Opportunity to Cash"
+      d365_modules: ["Sales", "A/R", "Inventory", "Shipping"]
+    - name: "Issue to Complete"
+      d365_modules: ["Service Management", "Jobs"]
+    - name: "Planning"
+      d365_modules: ["Manufacturing", "Planning Worksheets"]
+    - name: "Transporting"
+      d365_modules: ["Warehouse", "Transfer Orders"]
+    - name: "Recording"
+      d365_modules: ["Finance", "General Ledger"]
+    - name: "Managing"
+      d365_modules: ["All - Setup & Configuration"]
+    - name: "Isolated"
+      d365_modules: ["Various"]

@@ -1,32 +1,82 @@
 name: "Sprint Goals Agent"
-description: "Retrieves sprint goals from Notion that are assigned to specific process flows"
-version: "1.0.0"
+description: "Retrieves sprint goals with milestone alignment, issue tracking, and waterfall task status for D365 BC implementations"
+version: "2.0.0"
 model: "claude-sonnet-4-20250514"
 
 capabilities:
   - notion_query
+  - notion_database_query
   - goal_extraction
   - sprint_planning_analysis
   - process_flow_mapping
+  - milestone_tracking
+  - issue_correlation
+  - waterfall_task_status
+  - sprint_health_assessment
+  - demo_readiness_analysis
 
 inputs:
   - type: "sprint_identifier"
     description: "Sprint number or name"
   - type: "process_flows"
     description: "List of process flows being covered"
-  - type: "notion_database_id"
-    description: "Notion database containing sprint goals"
+  - type: "notion_database_ids"
+    description: "Notion database IDs for sprint goals, milestones, issues, and waterfall tasks"
+    schema:
+      sprint_goals_db: "string"
+      milestones_db: "string"
+      issues_db: "string"
+      waterfall_tasks_db: "string"
+  - type: "project_context"
+    description: "Project context from Project Context Agent"
+  - type: "milestones"
+    description: "Milestones from project context"
+  - type: "issues"
+    description: "Issues from project context"
 
 output:
   format: "json"
   schema:
+    sprint_context:
+      sprint: "string"
+      start_date: "string"
+      end_date: "string"
+      days_remaining: "number"
+      process_flows_in_scope: "array"
     sprint_goals:
       - id: "string"
         title: "string"
         description: "string"
-        process_flows: "array"
+        process_flow: "object"
         status: "string"
+        completion_percentage: "number"
+        owner: "object"
         acceptance_criteria: "array"
+        demo_items: "array"
+        dependencies: "object"
+        blocking_issues: "array"
+        contributing_to_milestone: "string"
+    milestones:
+      upcoming: "array"
+      recently_completed: "array"
+    issues:
+      blocking: "array"
+      non_blocking: "array"
+      resolved_this_sprint: "array"
+      summary: "object"
+    waterfall_tasks:
+      migrations: "object"
+      integrations: "object"
+      reports: "object"
+      extensions: "object"
+    resources: "object"
+    summary:
+      sprint_health: "string"
+      overall_progress: "number"
+      goals_status: "object"
+      key_risks: "array"
+      demo_readiness: "object"
+      show_and_tell_recommendations: "array"
 
 mcp_servers:
   - "mcp/servers/notion"
@@ -38,3 +88,27 @@ settings:
     - "Complete"
     - "Blocked"
     - "Deferred"
+  milestone_statuses:
+    - "On Track"
+    - "At Risk"
+    - "Delayed"
+    - "Complete"
+  issue_priorities:
+    - "Critical"
+    - "High"
+    - "Medium"
+    - "Low"
+  sprint_health_indicators:
+    healthy:
+      blocked_issues: 0
+      overall_progress_min: 70
+    at_risk:
+      blocked_issues_max: 2
+      overall_progress_min: 50
+    critical:
+      blocked_issues_min: 3
+  waterfall_task_types:
+    - "Migration"
+    - "Integration"
+    - "Report"
+    - "Extension"

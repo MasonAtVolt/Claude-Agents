@@ -1,0 +1,148 @@
+name: "Project Context Agent"
+description: "Queries Notion for complete D365 Business Central implementation project context including process flows, migrations, integrations, reports, resources, milestones, and issues"
+version: "1.0.0"
+model: "claude-sonnet-4-20250514"
+
+capabilities:
+  - notion_query
+  - notion_search
+  - notion_database_query
+  - project_structure_analysis
+  - d365_bc_implementation_context
+  - process_flow_mapping
+  - migration_tracking
+  - integration_analysis
+  - issue_aggregation
+  - milestone_tracking
+
+inputs:
+  - type: "project_name"
+    description: "Name of the D365 BC implementation project in Notion"
+  - type: "sprint_identifier"
+    description: "Current sprint number or name"
+  - type: "process_flow_grouping"
+    description: "Category of process flows being covered (e.g., 'Procure to Pay', 'Opportunity to Cash')"
+  - type: "notion_workspace_ids"
+    description: "Notion database IDs for various project components"
+    schema:
+      process_flows_db: "string"
+      waterfall_tasks_db: "string"
+      project_definition_db: "string"
+      issues_db: "string"
+      milestones_db: "string"
+
+output:
+  format: "json"
+  schema:
+    project_overview:
+      name: "string"
+      current_sprint: "string"
+      project_phase: "string"
+    process_flows:
+      - name: "string"
+        category: "string"
+        scenarios: "array"
+        design_completion: "number"
+        status: "string"
+        functional_areas: "array"
+    waterfall_tasks:
+      migrations:
+        - name: "string"
+          status: "string"
+          data_source: "string"
+          target_entity: "string"
+          complexity: "string"
+      integrations:
+        - name: "string"
+          status: "string"
+          external_system: "string"
+          integration_type: "string"
+          direction: "string"
+      reports:
+        - name: "string"
+          status: "string"
+          report_type: "string"
+          module: "string"
+      extensions:
+        - name: "string"
+          status: "string"
+          type: "string"
+    project_definition:
+      milestones:
+        - name: "string"
+          due_date: "string"
+          status: "string"
+          deliverables: "array"
+      sprints:
+        - name: "string"
+          start_date: "string"
+          end_date: "string"
+          goals: "array"
+      project_members:
+        - name: "string"
+          role: "string"
+    issues:
+      - id: "string"
+        title: "string"
+        status: "string"
+        priority: "string"
+        process_flow: "string"
+        blocking: "boolean"
+    resources:
+      process_flow_links: "array"
+      documentation_links: "array"
+
+mcp_servers:
+  - "mcp/servers/notion"
+
+settings:
+  notion:
+    project_template_structure:
+      process_flows:
+        categories:
+          - "Procure to Pay"
+          - "Opportunity to Cash"
+          - "Issue to Complete"
+          - "Planning"
+          - "Transporting"
+          - "Recording"
+          - "Managing"
+          - "Isolated"
+        required_fields:
+          - "Process Flow Name"
+          - "Category"
+          - "Design Completion %"
+          - "Sprint"
+          - "Status"
+          - "Scenarios"
+          - "Functional Areas"
+      waterfall_tasks:
+        sections:
+          - "Extensions"
+          - "Integrations"
+          - "Migrations"
+          - "Reports"
+          - "Issues"
+        required_fields:
+          - "Task Name"
+          - "Status"
+          - "Sprint"
+          - "Owner"
+          - "Priority"
+      project_definition:
+        sections:
+          - "Milestones"
+          - "Sprints"
+          - "Project Members"
+        required_fields:
+          - "Name"
+          - "Status"
+          - "Due Date"
+          - "Owner"
+      resources:
+        links_to:
+          - "Process Flows"
+          - "Waterfall Tasks"
+          - "Project Definition"
+          - "Sprint Goals"
+          - "Settings"
