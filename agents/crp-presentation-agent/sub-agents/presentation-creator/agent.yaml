@@ -1,0 +1,76 @@
+name: "CRP Presentation Creator"
+description: "Creates branded HTML slideshow presentations for Conference Room Pilot testing sessions"
+version: "1.0.0"
+model: "claude-opus-4-5-20251101"
+
+capabilities:
+  - html_generation
+  - presentation_design
+  - brand_compliance
+  - responsive_design
+  - accessibility
+  - sign_off_tracking
+
+inputs:
+  - type: "scenarios_data"
+    description: "Structured CRP scenarios JSON from CRP Scenario Fetcher"
+  - type: "project_name"
+    description: "Project/client name"
+  - type: "testing_session_type"
+    description: "Type of testing session (Manufacturing, Sales, Warehousing, Finance)"
+  - type: "date"
+    description: "Presentation date"
+  - type: "sprint_context"
+    description: "Optional sprint or CRP phase information"
+
+output:
+  format: "html"
+  location: "output/"
+  filename_pattern: "{project}-crp-{session_type}-{date}.html"
+
+assets:
+  brand:
+    - "assets/prompts/brand-guidelines.md"
+  logos:
+    - "assets/logos/black-VOLT-TECHNOLOGIES2 (L).png"
+    - "assets/logos/white-VOLT-TECHNOLOGIES3(S).png"
+  templates:
+    - "assets/templates/slideshow-base.html"
+    - "assets/templates/slideshow-styles.css"
+    - "assets/templates/Show and tell powerpoint presentation example.pdf"
+
+settings:
+  theme:
+    primary: "#000000"
+    secondary: "#FFFFFF"
+    accent: "#D4AF37"
+    success: "#38A169"
+    warning: "#D69E2E"
+    danger: "#C53030"
+  typography:
+    heading: "Montserrat"
+    body: "Fira Sans"
+  slide_structure:
+    - title_slide
+    - session_overview_slide
+    - process_flows_agenda_slide
+    - process_flow_section_slides
+    - scenario_slides
+    - summary_slide
+    - next_steps_slide
+    - thank_you_slide
+  scenario_display:
+    show_id: true
+    show_priority_badge: true
+    show_prerequisites: true
+    show_expected_results: true
+    show_test_data: true
+    show_sign_off_checkbox: true
+  features:
+    - keyboard_navigation
+    - touch_swipe
+    - progress_indicator
+    - slide_counter
+    - thumbnail_grid
+    - print_support
+    - sign_off_checkboxes

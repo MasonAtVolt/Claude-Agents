@@ -1,0 +1,205 @@
+name: "CRP Pipeline"
+description: "Orchestrates sub-agents to generate a complete Conference Room Pilot presentation with testing scenarios from Notion"
+version: "1.0.0"
+
+overview: |
+  This workflow chains together specialized agents to produce a complete
+  Conference Room Pilot (CRP) testing presentation for D365 Business Central implementations.
+
+  Pipeline flow:
+  1. CRP Scenario Fetcher → Queries Notion for CRP scenarios by project and process flow
+  2. Presentation Creator → Creates the final HTML presentation with scenarios
+  3. Convert to PowerPoint → Converts HTML to .pptx format
+
+  The presentation helps consultants facilitate CRP testing sessions by providing
+  structured testing scenarios organized by process flow, with sign-off tracking
+  for customer validation.
+
+inputs:
+  - name: "project_name"
+    description: "Project or client name (e.g., 'White Warren')"
+    type: "string"
+    required: true
+
+  - name: "testing_session_type"
+    description: "Type of testing session (e.g., 'Manufacturing', 'Sales', 'Warehousing', 'Finance')"
+    type: "string"
+    required: true
+
+  - name: "process_flow_grouping"
+    description: "Optional specific process flow grouping to filter"
+    type: "string"
+    required: false
+
+  - name: "sprint_context"
+    description: "Optional sprint or CRP phase information (e.g., 'CRP Phase 1', 'Sprint 5')"
+    type: "string"
+    required: false
+
+  - name: "notion_database_id"
+    description: "Notion database ID containing CRP scenario data"
+    type: "string"
+    required: true
+
+  - name: "date"
+    description: "Presentation date (defaults to today if not provided)"
+    type: "string"
+    required: false
+
+mcp_servers:
+  - "mcp/servers/notion"
+
+steps:
+  - name: "fetch_scenarios"
+    agent: "agents/crp-presentation-agent/sub-agents/crp-scenario-fetcher"
+    description: "Query Notion for CRP scenarios and organize by process flow"
+    inputs:
+      project_name: "{{inputs.project_name}}"
+      testing_session_type: "{{inputs.testing_session_type}}"
+      process_flow_grouping: "{{inputs.process_flow_grouping}}"
+      notion_database_id: "{{inputs.notion_database_id}}"
+      sprint_context: "{{inputs.sprint_context}}"
+    outputs:
+      - scenarios_data
+      - process_flows
+      - summary
+    timeout: "120s"
+
+  - name: "create_presentation"
+    agent: "agents/crp-presentation-agent/sub-agents/presentation-creator"
+    description: "Create the branded HTML presentation with CRP scenarios"
+    inputs:
+      project_name: "{{inputs.project_name}}"
+      testing_session_type: "{{inputs.testing_session_type}}"
+      sprint_context: "{{inputs.sprint_context}}"
+      date: "{{inputs.date | default: today}}"
+      scenarios_data: "{{steps.fetch_scenarios.outputs.scenarios_data}}"
+    outputs:
+      - presentation_file
+    depends_on:
+      - "fetch_scenarios"
+    timeout: "180s"
+
+  - name: "convert_to_powerpoint"
+    skill: "skills/core/html-to-pptx"
+    description: "Convert the HTML presentation to PowerPoint format"
+    command: "node tools/convert-html-to-pptx.js {{steps.create_presentation.outputs.presentation_file}}"
+    inputs:
+      html_file: "{{steps.create_presentation.outputs.presentation_file}}"
+      output_path: "output/{{inputs.project_name | slugify}}-crp-{{inputs.testing_session_type | slugify}}-{{date}}.pptx"
+    outputs:
+      - pptx_file
+    depends_on:
+      - "create_presentation"
+    timeout: "120s"
+
+outputs:
+  presentation_html:
+    source: "{{steps.create_presentation.outputs.presentation_file}}"
+    location: "output/"
+    filename_pattern: "{{inputs.project_name | slugify}}-crp-{{inputs.testing_session_type | slugify}}-{{date}}.html"
+
+  presentation_pptx:
+    source: "{{steps.convert_to_powerpoint.outputs.pptx_file}}"
+    location: "output/"
+    filename_pattern: "{{inputs.project_name | slugify}}-crp-{{inputs.testing_session_type | slugify}}-{{date}}.pptx"
+    primary: true
+
+  scenarios_summary:
+    source: "{{steps.fetch_scenarios.outputs.summary}}"
+    description: "Summary of CRP scenarios by process flow and priority"
+
+notes: |
+  To run this pipeline:
+
+  ```
+  claude "Run the crp-pipeline workflow for White Warren,
+          Manufacturing session type,
+          using Notion database abc123"
+  ```
+
+  Or with sprint context:
+  ```
+  claude "Run crp-pipeline for Acme Corp,
+          Sales testing session,
+          CRP Phase 2,
+          Notion database xyz789"
+  ```
+
+  Or filtering by specific process flow grouping:
+  ```
+  claude "Run crp-pipeline for White Warren,
+          Warehousing session,
+          Order to Cash process flows,
+          Sprint 4,
+          Notion database abc123"
+  ```
+
+  Outputs:
+  - HTML: output/{project}-crp-{session-type}-{date}.html
+  - PowerPoint: output/{project}-crp-{session-type}-{date}.pptx (primary)
+
+  ## Dependencies
+
+  The PowerPoint conversion requires:
+  ```bash
+  npm install pptxgenjs cheerio
+  ```
+
+  ## Testing Session Types
+
+  The pipeline supports these common D365 Business Central testing sessions:
+  - Manufacturing - Production BOMs, routings, production orders
+  - Sales - Customer management, sales orders, invoicing
+  - Warehousing - Locations, picks, put-aways, inventory
+  - Finance - GL, journals, bank reconciliation
+  - Purchasing - Vendor management, purchase orders, receiving
+
+  ## CRP Scenario Organization
+
+  Scenarios are fetched from Notion and organized by:
+  1. Process Flow (e.g., "Item Setup", "Production Order Creation")
+  2. Priority (High, Medium, Low)
+  3. Sequence (logical order within process flow)
+
+  ## Notion Data Requirements
+
+  The Notion database should contain:
+  - Scenario Name (title) - Required
+  - Scenario ID (text) - Required (e.g., CRP-MFG-001)
+  - Process Flow (relation/select) - Required
+  - Project (relation/select) - Required
+  - Description (text) - Required
+  - Prerequisites (text) - Optional
+  - Expected Results (text) - Optional
+  - Test Data (text) - Optional
+  - Priority (select) - Optional (High/Medium/Low)
+  - Sequence (number) - Optional
+  - Status (select) - Optional
+  - Sign-Off (checkbox) - Optional
+
+  ## Sign-Off Tracking
+
+  Each scenario slide includes:
+  - Passed checkbox
+  - Needs Work checkbox
+  - Deferred checkbox
+  - Notes area
+
+  This allows consultants to track sign-off status during the CRP session.
+
+  ## Example Scenarios
+
+  Manufacturing:
+  - CRP-MFG-001: Create Production Item
+  - CRP-MFG-002: Create Production BOM
+  - CRP-MFG-003: Create Routing
+  - CRP-MFG-004: Create Firm Planned Production Order
+  - CRP-MFG-005: Post Production Output
+
+  Sales:
+  - CRP-SAL-001: Create Customer
+  - CRP-SAL-002: Create Sales Quote
+  - CRP-SAL-003: Convert Quote to Order
+  - CRP-SAL-004: Ship Sales Order
+  - CRP-SAL-005: Post Sales Invoice

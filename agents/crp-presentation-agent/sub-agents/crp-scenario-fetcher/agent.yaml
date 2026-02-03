@@ -1,0 +1,82 @@
+name: "CRP Scenario Fetcher"
+description: "Queries Notion for Conference Room Pilot scenarios by project and process flow, organizing them for presentation"
+version: "1.0.0"
+model: "claude-opus-4-5-20251101"
+
+capabilities:
+  - notion_query
+  - scenario_extraction
+  - process_flow_organization
+  - d365_business_central_expertise
+  - data_structuring
+
+inputs:
+  - type: "project_name"
+    description: "Project/client name to filter CRP scenarios"
+  - type: "testing_session_type"
+    description: "Type of testing session (Manufacturing, Warehousing, Sales, Finance)"
+  - type: "process_flow_grouping"
+    description: "Optional specific process flow grouping to filter"
+  - type: "notion_database_id"
+    description: "Notion database ID containing CRP scenario data"
+  - type: "sprint_context"
+    description: "Optional sprint or CRP phase to filter scenarios"
+
+output:
+  format: "json"
+  schema:
+    testing_session:
+      project_name: "string"
+      session_type: "string"
+      date: "string"
+      sprint_context: "string"
+    process_flows:
+      - id: "string"
+        name: "string"
+        description: "string"
+        scenario_count: "number"
+        scenarios:
+          - id: "string"
+            scenario_id: "string"
+            name: "string"
+            description: "string"
+            prerequisites: "string"
+            expected_results: "string"
+            test_data: "string"
+            priority: "string"
+            sequence: "number"
+    summary:
+      total_process_flows: "number"
+      total_scenarios: "number"
+      scenarios_by_priority:
+        high: "number"
+        medium: "number"
+        low: "number"
+
+mcp_servers:
+  - "mcp/servers/notion"
+
+settings:
+  notion:
+    required_fields:
+      - "Scenario Name"
+      - "Scenario ID"
+      - "Process Flow"
+      - "Project"
+      - "Description"
+    optional_fields:
+      - "Prerequisites"
+      - "Expected Results"
+      - "Test Data"
+      - "Priority"
+      - "Status"
+      - "Sign-Off"
+  scenario_ordering:
+    primary: "sequence"
+    secondary: "priority"
+    tertiary: "name"
+  process_flow_ordering:
+    - "Setup & Configuration"
+    - "Master Data"
+    - "Transactions"
+    - "Reporting"
