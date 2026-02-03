@@ -18,7 +18,19 @@
       "Bash(Select-Object -ExpandProperty Count)",
       "Bash(npm install:*)",
       "Bash(node convert-to-pptx.js:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(python3:*)",
+      "Bash(fold:*)",
+      "Bash(pip show:*)",
+      "Bash(pip install:*)",
+      "Bash(python -m pip:*)",
+      "Bash(python -m pip install:*)",
+      "Bash(py -m pip show python-pptx)",
+      "Bash(py -m pip install:*)",
+      "Bash(findstr:*)",
+      "Bash(more:*)",
+      "Bash(Write-Output)"
     ]
   }
 }
