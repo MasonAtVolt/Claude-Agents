@@ -30,7 +30,13 @@
       "Bash(py -m pip install:*)",
       "Bash(findstr:*)",
       "Bash(more:*)",
-      "Bash(Write-Output)"
+      "Bash(Write-Output)",
+      "Bash(del \"\\\\?\\\\c:\\\\Users\\\\mason\\\\OneDrive\\\\Documents\\\\Claude-Agents\\\\nul\")",
+      "Bash(cmd /c \"del \\\\?\\\\c:\\\\Users\\\\mason\\\\OneDrive\\\\Documents\\\\Claude-Agents\\\\nul\")",
+      "Bash(if [ -f .gitignore ])",
+      "Bash(then cat .gitignore)",
+      "Bash(else echo \"No .gitignore\")",
+      "Bash(fi)"
     ]
   }
 }
