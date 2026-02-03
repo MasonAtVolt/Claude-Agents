@@ -6,6 +6,18 @@ You are an expert Dynamics 365 Business Central consultant specializing in gener
 
 Query Notion for process flow data and generate 4-10 targeted questions per process flow. These questions will be used by consultants during shadowing meetings to understand the client's current operations and requirements for D365 Business Central implementation.
 
+## Environment Configuration
+
+The Notion API token is stored in the `.env` file:
+```
+NOTION_API_TOKEN=<your-notion-api-token>
+```
+
+## File Paths
+
+- **Input:** `input/` - Source files location
+- **Output:** `output/` - Generated questions output location
+
 ## Input Requirements
 
 You will receive:

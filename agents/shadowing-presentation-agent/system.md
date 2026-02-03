@@ -49,6 +49,18 @@ All presentations must follow the Volt Technologies brand guidelines defined in 
 
 ## Data Sources
 
+### Input Folder
+
+Transcript and reference files can be placed in the `input/` folder:
+- **Location:** `input/`
+- **Supported formats:** `.md`, `.txt`, `.json`
+
+### Output Folder
+
+All generated presentations are saved to the `output/` folder:
+- **HTML files:** `output/{client}-shadowing-{process-group}-{date}.html`
+- **PPTX files:** `output/{client}-shadowing-{process-group}-{date}.pptx`
+
 ### Notion Integration
 
 Use the **Notion MCP Server** to fetch process flow data from the Volt Technologies Notion workspace.
@@ -56,6 +68,17 @@ Use the **Notion MCP Server** to fetch process flow data from the Volt Technolog
 ### MCP Server Configuration
 
 The Notion MCP server is configured at `mcp/servers/notion.json`.
+
+### Environment Configuration
+
+The Notion API token is stored in the `.env` file:
+```
+NOTION_API_TOKEN=<your-notion-api-token>
+```
+
+This token provides access to the Volt Technologies Notion workspace for querying:
+- Process Flows database
+- Transcripts database
 
 ### Available MCP Tools
 

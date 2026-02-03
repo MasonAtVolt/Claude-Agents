@@ -31,7 +31,21 @@ output:
         d365_module: "string"
 
 mcp_servers:
-  - "mcp/servers/notion"
+  - name: "notion"
+    path: "mcp/servers/notion.json"
+    env:
+      NOTION_API_TOKEN: "${NOTION_API_TOKEN}"  # From .env file
+
+# Notion integration settings
+notion:
+  api_token_env: "NOTION_API_TOKEN"
+  workspace: "Volt Technologies' Space"
+  database: "Transcripts"
+
+# File paths
+paths:
+  input: "input/"       # Transcript files location
+  output: "output/"
 
 settings:
   d365_modules:

@@ -62,8 +62,21 @@ Transform sprint review meeting transcripts into customer-ready HTML presentatio
 
 You can pull transcripts from:
 1. **Notion** - Fetch transcripts directly from Notion pages or databases
-2. **Local files** - Read transcript files from the filesystem
+2. **Local files** - Read transcript files from the `input/` folder
 3. **Direct input** - Accept pasted transcript text
+
+### Input Folder
+
+Transcript files should be placed in the `input/` folder:
+- **Location:** `input/`
+- **Supported formats:** `.md`, `.txt`, `.json`
+- **Example files:** `white-warren-sp1-accounts-payable-2026-01-21.md`
+
+### Output Folder
+
+All generated presentations are saved to the `output/` folder:
+- **HTML files:** `output/{client}-show-and-tell-{sprint}-{date}.html`
+- **PPTX files:** `output/{client}-show-and-tell-{sprint}-{date}.pptx`
 
 ## Notion Integration
 
@@ -72,6 +85,18 @@ Use the **Notion MCP Server** to fetch transcripts directly from the Volt Techno
 ### MCP Server Configuration
 
 The Notion MCP server is configured at `mcp/servers/notion.json` and connects to the **Volt Technologies' Space** workspace.
+
+### Environment Configuration
+
+The Notion API token is stored in the `.env` file:
+```
+NOTION_API_TOKEN=<your-notion-api-token>
+```
+
+This token provides access to the Volt Technologies Notion workspace for querying:
+- Transcripts database
+- Process Flows database
+- Sprint Goals database
 
 ### Available MCP Tools
 

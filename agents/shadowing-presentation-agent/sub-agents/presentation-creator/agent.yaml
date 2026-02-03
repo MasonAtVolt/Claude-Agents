@@ -27,6 +27,11 @@ output:
   location: "output/"
   filename_pattern: "{client}-shadowing-{grouping}-{date}.html"
 
+# File paths
+paths:
+  input: "input/"
+  output: "output/"
+
 assets:
   brand:
     - "assets/prompts/brand-guidelines.md"

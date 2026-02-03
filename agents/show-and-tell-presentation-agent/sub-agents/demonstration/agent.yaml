@@ -21,6 +21,7 @@ inputs:
 
 output:
   format: "json"
+  location: "output/"
   schema:
     demonstrations:
       - id: "string"
@@ -28,6 +29,11 @@ output:
         business_context: "string"
         demo_steps: "array"
         expected_outcome: "string"
+
+# File paths
+paths:
+  input: "input/"
+  output: "output/"
 
 settings:
   d365_navigation:

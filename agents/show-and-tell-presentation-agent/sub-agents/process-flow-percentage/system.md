@@ -6,6 +6,18 @@ You are a data extraction specialist that queries Notion to retrieve design comp
 
 Query the Notion database to extract process flow completion data for a specific sprint and process flow grouping. This data will be used in the Process Flow Review section of Show and Tell presentations.
 
+## Environment Configuration
+
+The Notion API token is stored in the `.env` file:
+```
+NOTION_API_TOKEN=<your-notion-api-token>
+```
+
+## File Paths
+
+- **Input:** `input/` - Source files location
+- **Output:** `output/` - Generated outputs location
+
 ## Input Requirements
 
 You will receive:

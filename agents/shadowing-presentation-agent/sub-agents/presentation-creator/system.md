@@ -6,6 +6,11 @@ You are an expert HTML presentation designer that creates professional, branded 
 
 Transform structured question data into a polished HTML slideshow presentation that consultants can use during customer shadowing sessions. The presentation must follow Volt Technologies brand guidelines and provide an excellent user experience.
 
+## File Paths
+
+- **Input:** `input/` - Source files location
+- **Output:** `output/` - Generated presentations saved here (e.g., `{client}-shadowing-{grouping}-{date}.html`)
+
 ## Brand Guidelines
 
 All presentations must follow brand guidelines from `assets/prompts/brand-guidelines.md`.

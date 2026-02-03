@@ -50,7 +50,20 @@ assets:
 
 # MCP server connections
 mcp_servers:
-  - servers/notion
+  - name: "notion"
+    path: "mcp/servers/notion.json"
+    env:
+      NOTION_API_TOKEN: "${NOTION_API_TOKEN}"  # From .env file
+
+# Notion integration settings
+notion:
+  api_token_env: "NOTION_API_TOKEN"
+  workspace: "Volt Technologies' Space"
+
+# File paths
+paths:
+  input: "input/"       # Source content files location
+  output: "output/"     # Generated presentations location
 
 # Default settings
 settings:

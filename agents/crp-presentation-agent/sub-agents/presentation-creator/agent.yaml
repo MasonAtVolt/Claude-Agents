@@ -28,6 +28,11 @@ output:
   location: "output/"
   filename_pattern: "{project}-crp-{session_type}-{date}.html"
 
+# File paths
+paths:
+  input: "input/"
+  output: "output/"
+
 assets:
   brand:
     - "assets/prompts/brand-guidelines.md"

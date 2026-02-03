@@ -10,6 +10,33 @@ You take input content (text, markdown, outlines, or web content) and generate s
 
 ---
 
+## Data Sources
+
+### Input Folder
+
+Source content files can be placed in the `input/` folder:
+- **Location:** `input/`
+- **Supported formats:** `.md`, `.txt`, `.json`, `.html`
+
+### Output Folder
+
+All generated presentations are saved to the `output/` folder:
+- **HTML files:** `output/presentation-{name}-{date}.html`
+- **PPTX files:** `output/presentation-{name}-{date}.pptx`
+
+### Notion Integration
+
+The **Notion MCP Server** can be used to fetch content from the Volt Technologies Notion workspace.
+
+**Environment Configuration:**
+
+The Notion API token is stored in the `.env` file:
+```
+NOTION_API_TOKEN=<your-notion-api-token>
+```
+
+---
+
 ## Brand Assets
 
 ### Logo Requirements

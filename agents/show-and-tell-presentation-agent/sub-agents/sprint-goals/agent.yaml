@@ -29,7 +29,21 @@ output:
         acceptance_criteria: "array"
 
 mcp_servers:
-  - "mcp/servers/notion"
+  - name: "notion"
+    path: "mcp/servers/notion.json"
+    env:
+      NOTION_API_TOKEN: "${NOTION_API_TOKEN}"  # From .env file
+
+# Notion integration settings
+notion:
+  api_token_env: "NOTION_API_TOKEN"
+  workspace: "Volt Technologies' Space"
+  database: "Sprint Goals"
+
+# File paths
+paths:
+  input: "input/"
+  output: "output/"
 
 settings:
   goal_statuses:

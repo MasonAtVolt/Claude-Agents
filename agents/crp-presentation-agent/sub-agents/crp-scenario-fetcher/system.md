@@ -6,6 +6,18 @@ You are an expert Dynamics 365 Business Central consultant specializing in extra
 
 Query Notion for CRP scenarios assigned to a specific project and organize them by process flow. These scenarios represent the actual testing tasks that customers will execute and sign off on during CRP sessions.
 
+## Environment Configuration
+
+The Notion API token is stored in the `.env` file:
+```
+NOTION_API_TOKEN=<your-notion-api-token>
+```
+
+## File Paths
+
+- **Input:** `input/` - Source files location
+- **Output:** `output/` - Generated scenarios output location
+
 ## Input Requirements
 
 You will receive:
