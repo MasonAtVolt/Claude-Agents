@@ -31,8 +31,8 @@ assets:
   brand:
     - "assets/prompts/brand-guidelines.md"
   logos:
-    - "assets/logos/volt-logo-full.png"
-    - "assets/logos/volt-logo-mark.png"
+    - "assets/logos/black-VOLT-TECHNOLOGIES2 (L).png"
+    - "assets/logos/white-VOLT-TECHNOLOGIES3(S).png"
   templates:
     - "assets/templates/slideshow-base.html"
   styles:
