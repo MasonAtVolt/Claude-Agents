@@ -1,7 +1,7 @@
 name: "Demonstration Agent"
 description: "Creates D365 Business Central demo steps for Show and Tell presentations"
 version: "1.0.0"
-model: "claude-sonnet-4-20250514"
+model: "claude-opus-4-5-20251101"
 
 capabilities:
   - d365_business_central_expertise

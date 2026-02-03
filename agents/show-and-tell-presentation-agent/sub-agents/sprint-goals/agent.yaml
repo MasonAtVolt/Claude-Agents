@@ -1,7 +1,7 @@
 name: "Sprint Goals Agent"
 description: "Retrieves sprint goals from Notion that are assigned to specific process flows"
 version: "1.0.0"
-model: "claude-sonnet-4-20250514"
+model: "claude-opus-4-5-20251101"
 
 capabilities:
   - notion_query

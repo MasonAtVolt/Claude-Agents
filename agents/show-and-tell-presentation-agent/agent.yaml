@@ -1,7 +1,7 @@
 name: "Show and Tell Presentation Agent"
 description: "Generates D365 Business Central Show and Tell presentations from Notion data and transcripts"
 version: "1.1.0"
-model: "claude-sonnet-4-20250514"
+model: "claude-opus-4-5-20251101"
 
 # Agent capabilities
 capabilities:
