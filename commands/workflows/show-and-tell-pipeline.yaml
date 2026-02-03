@@ -12,6 +12,7 @@ overview: |
   3. Sprint Goals Agent → Pulls sprint goals for process flows
   4. Demonstration Agent → Creates demo steps (uses data from steps 1-3)
   5. Show and Tell Presentation Agent → Generates final HTML presentation
+  6. Convert to PowerPoint → Converts HTML to .pptx format
 
 inputs:
   - name: "sprint"
@@ -102,11 +103,30 @@ steps:
       - "generate_demo_steps"
     timeout: "300s"
 
+  - name: "convert_to_powerpoint"
+    skill: "skills/core/html-to-pptx"
+    description: "Convert the HTML presentation to PowerPoint format"
+    command: "node tools/convert-html-to-pptx.js {{steps.generate_presentation.outputs.presentation_file}}"
+    inputs:
+      html_file: "{{steps.generate_presentation.outputs.presentation_file}}"
+      output_path: "output/show-and-tell-{{inputs.sprint | slugify}}-{{date}}.pptx"
+    outputs:
+      - pptx_file
+    depends_on:
+      - "generate_presentation"
+    timeout: "120s"
+
 outputs:
-  presentation:
+  presentation_html:
     source: "{{steps.generate_presentation.outputs.presentation_file}}"
     location: "output/"
     filename_pattern: "show-and-tell-{{inputs.sprint | slugify}}-{{date}}.html"
+
+  presentation_pptx:
+    source: "{{steps.convert_to_powerpoint.outputs.pptx_file}}"
+    location: "output/"
+    filename_pattern: "show-and-tell-{{inputs.sprint | slugify}}-{{date}}.pptx"
+    primary: true
 
 notes: |
   To run this pipeline:
@@ -117,4 +137,13 @@ notes: |
           using transcript from Notion page abc123"
   ```
 
-  Output: output/show-and-tell-sprint-5-[date].html
+  Outputs:
+  - HTML: output/show-and-tell-sprint-5-[date].html
+  - PowerPoint: output/show-and-tell-sprint-5-[date].pptx (primary)
+
+  ## Dependencies
+
+  The PowerPoint conversion requires:
+  ```bash
+  npm install pptxgenjs cheerio
+  ```

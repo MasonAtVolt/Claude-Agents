@@ -1,0 +1,47 @@
+name: "HTML to PowerPoint Converter"
+description: "Converts HTML slideshow presentations to PowerPoint (.pptx) format"
+version: "1.0.0"
+
+capabilities:
+  - html_parsing
+  - pptx_generation
+  - brand_compliance
+  - slide_conversion
+
+inputs:
+  - type: "html_file"
+    description: "Path to the HTML slideshow file to convert"
+    required: true
+  - type: "output_path"
+    description: "Path for the output PowerPoint file (optional, defaults to same name with .pptx)"
+    required: false
+  - type: "brand_assets"
+    description: "Path to brand assets folder for logo embedding"
+    required: false
+
+output:
+  format: "pptx"
+  description: "PowerPoint presentation file with embedded fonts and logos"
+
+assets:
+  logos:
+    - "assets/logos/black-VOLT-TECHNOLOGIES2 (L).png"
+    - "assets/logos/white-VOLT-TECHNOLOGIES3(S).png"
+  brand:
+    - "assets/prompts/brand-guidelines.md"
+
+settings:
+  slide_dimensions:
+    width: 13.333  # inches (16:9 widescreen)
+    height: 7.5
+  theme:
+    primary: "#000000"
+    secondary: "#FFFFFF"
+    accent: "#D4AF37"
+  fonts:
+    heading: "Montserrat"
+    body: "Fira Sans"
+  conversion_options:
+    embed_fonts: true
+    include_speaker_notes: true
+    preserve_animations: false

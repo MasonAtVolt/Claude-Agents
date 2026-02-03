@@ -1,0 +1,58 @@
+name: "Shadowing Question Generator"
+description: "Generates targeted shadowing questions from Notion process flow data for D365 Business Central implementations"
+version: "1.0.0"
+model: "claude-opus-4-5-20251101"
+
+capabilities:
+  - notion_query
+  - question_generation
+  - process_flow_analysis
+  - d365_business_central_expertise
+  - business_process_understanding
+
+inputs:
+  - type: "process_flow_grouping"
+    description: "Category of process flows (e.g., 'Inventory Management', 'Order to Cash')"
+  - type: "notion_database_id"
+    description: "Notion database ID containing process flow data"
+  - type: "client_context"
+    description: "Optional client-specific context for tailored questions"
+
+output:
+  format: "json"
+  schema:
+    process_flows:
+      - id: "string"
+        name: "string"
+        description: "string"
+        category: "string"
+        questions:
+          - id: "string"
+            category: "string"
+            question: "string"
+            talking_points: "array"
+            expected_insights: "string"
+    summary:
+      total_process_flows: "number"
+      total_questions: "number"
+      categories_covered: "array"
+
+mcp_servers:
+  - "mcp/servers/notion"
+
+settings:
+  question_requirements:
+    min_per_process_flow: 4
+    max_per_process_flow: 10
+    categories:
+      - "Current State Discovery"
+      - "Volume & Frequency"
+      - "Pain Points & Challenges"
+      - "Requirements & Expectations"
+      - "Integration & Data"
+  notion:
+    required_fields:
+      - "Process Flow Name"
+      - "Description"
+      - "Category"
+      - "Sub-Processes"

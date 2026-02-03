@@ -1,0 +1,156 @@
+name: "Shadowing Pipeline"
+description: "Orchestrates sub-agents to generate a complete Shadowing presentation with questions from Notion process flows"
+version: "1.0.0"
+
+overview: |
+  This workflow chains together specialized agents to produce a complete
+  Shadowing meeting presentation for D365 Business Central implementations.
+
+  Pipeline flow:
+  1. Shadowing Question Generator → Queries Notion for process flows and generates questions
+  2. Presentation Creator → Creates the final HTML presentation
+  3. Convert to PowerPoint → Converts HTML to .pptx format
+
+  The presentation helps consultants facilitate shadowing sessions by providing
+  structured questions (4-10 per process flow) to understand client business processes.
+
+inputs:
+  - name: "client_name"
+    description: "Client or project name (e.g., 'White Warren')"
+    type: "string"
+    required: true
+
+  - name: "process_flow_grouping"
+    description: "Category of process flows (e.g., 'Inventory Management', 'Order to Cash')"
+    type: "string"
+    required: true
+
+  - name: "sprint_context"
+    description: "Optional sprint information (e.g., 'Sprint 2')"
+    type: "string"
+    required: false
+
+  - name: "notion_database_id"
+    description: "Notion database ID containing process flow data"
+    type: "string"
+    required: true
+
+  - name: "date"
+    description: "Presentation date (defaults to today if not provided)"
+    type: "string"
+    required: false
+
+mcp_servers:
+  - "mcp/servers/notion"
+
+steps:
+  - name: "generate_questions"
+    agent: "agents/shadowing-presentation-agent/sub-agents/shadowing-question-generator"
+    description: "Query Notion for process flows and generate shadowing questions"
+    inputs:
+      process_flow_grouping: "{{inputs.process_flow_grouping}}"
+      notion_database_id: "{{inputs.notion_database_id}}"
+      client_context: "{{inputs.client_name}}"
+    outputs:
+      - questions_data
+      - process_flows
+      - summary
+    timeout: "120s"
+
+  - name: "create_presentation"
+    agent: "agents/shadowing-presentation-agent/sub-agents/presentation-creator"
+    description: "Create the branded HTML presentation with questions"
+    inputs:
+      client_name: "{{inputs.client_name}}"
+      process_flow_grouping: "{{inputs.process_flow_grouping}}"
+      sprint_context: "{{inputs.sprint_context}}"
+      date: "{{inputs.date | default: today}}"
+      questions_data: "{{steps.generate_questions.outputs.questions_data}}"
+    outputs:
+      - presentation_file
+    depends_on:
+      - "generate_questions"
+    timeout: "180s"
+
+  - name: "convert_to_powerpoint"
+    skill: "skills/core/html-to-pptx"
+    description: "Convert the HTML presentation to PowerPoint format"
+    command: "node tools/convert-html-to-pptx.js {{steps.create_presentation.outputs.presentation_file}}"
+    inputs:
+      html_file: "{{steps.create_presentation.outputs.presentation_file}}"
+      output_path: "output/{{inputs.client_name | slugify}}-shadowing-{{inputs.process_flow_grouping | slugify}}-{{date}}.pptx"
+    outputs:
+      - pptx_file
+    depends_on:
+      - "create_presentation"
+    timeout: "120s"
+
+outputs:
+  presentation_html:
+    source: "{{steps.create_presentation.outputs.presentation_file}}"
+    location: "output/"
+    filename_pattern: "{{inputs.client_name | slugify}}-shadowing-{{inputs.process_flow_grouping | slugify}}-{{date}}.html"
+
+  presentation_pptx:
+    source: "{{steps.convert_to_powerpoint.outputs.pptx_file}}"
+    location: "output/"
+    filename_pattern: "{{inputs.client_name | slugify}}-shadowing-{{inputs.process_flow_grouping | slugify}}-{{date}}.pptx"
+    primary: true
+
+  questions_summary:
+    source: "{{steps.generate_questions.outputs.summary}}"
+    description: "Summary of generated questions per process flow"
+
+notes: |
+  To run this pipeline:
+
+  ```
+  claude "Run the shadowing-pipeline workflow for White Warren,
+          Inventory Management process flows,
+          using Notion database abc123"
+  ```
+
+  Or with sprint context:
+  ```
+  claude "Run shadowing-pipeline for Acme Corp,
+          Order to Cash,
+          Sprint 3,
+          Notion database xyz789"
+  ```
+
+  Outputs:
+  - HTML: output/{client}-shadowing-{grouping}-{date}.html
+  - PowerPoint: output/{client}-shadowing-{grouping}-{date}.pptx (primary)
+
+  ## Dependencies
+
+  The PowerPoint conversion requires:
+  ```bash
+  npm install pptxgenjs cheerio
+  ```
+
+  ## Question Categories Generated
+
+  The pipeline generates 4-10 questions per process flow across these categories:
+  1. Current State Discovery - Understanding existing processes
+  2. Volume & Frequency - Transaction volumes and patterns
+  3. Pain Points & Challenges - Current system limitations
+  4. Requirements & Expectations - Desired improvements
+  5. Integration & Data - System connections and migration needs
+
+  ## Example Questions
+
+  For "Location Management" process flow:
+  - "Please showcase how your current warehouse locations, zones, bins, aisles, and racks are managed today"
+  - "How do you track which products are stored in which locations?"
+  - "What naming conventions do you use for your bin/location codes?"
+  - "How do you handle location capacity and overflow situations?"
+
+  ## Notion Data Requirements
+
+  The Notion database should contain:
+  - Process Flow Name (title)
+  - Description (text)
+  - Category (select)
+  - Sub-Processes (relation, optional)
+  - Status (select, optional)

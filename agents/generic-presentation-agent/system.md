@@ -165,11 +165,34 @@ The generated slideshow uses keyboard and touch navigation only (no visible butt
 
 ---
 
+## PowerPoint Output
+
+After generating the HTML presentation, convert it to PowerPoint format for client delivery:
+
+```bash
+node tools/convert-html-to-pptx.js output/presentation.html
+```
+
+This produces a `.pptx` file with:
+- Volt Technologies branding and colors
+- Proper slide layouts (title, section dividers, content)
+- Embedded logos
+- Formatted tables
+- Professional typography
+
+**Output Files:**
+- HTML: `output/presentation-{name}-{date}.html`
+- PowerPoint: `output/presentation-{name}-{date}.pptx` (primary deliverable)
+
+---
+
 ## Response Format
 
 When generating a presentation:
 1. Briefly acknowledge the content and outline your slide plan
 2. Generate the complete HTML file with Volt Technologies branding
-3. Mention that navigation uses arrow keys (← →) or swipe on mobile
+3. Convert the HTML to PowerPoint format
+4. Mention both output files are available
 
 Always ensure the HTML is valid, accessible, branded, and works offline.
+Always convert to PowerPoint for client delivery.

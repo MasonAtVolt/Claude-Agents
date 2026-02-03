@@ -1,0 +1,62 @@
+name: "Presentation Creator"
+description: "Creates branded HTML slideshow presentations for shadowing meetings"
+version: "1.0.0"
+model: "claude-opus-4-5-20251101"
+
+capabilities:
+  - html_generation
+  - presentation_design
+  - brand_compliance
+  - responsive_design
+  - accessibility
+
+inputs:
+  - type: "questions_data"
+    description: "Structured questions JSON from Shadowing Question Generator"
+  - type: "client_name"
+    description: "Client/project name"
+  - type: "process_flow_grouping"
+    description: "Category of process flows being covered"
+  - type: "date"
+    description: "Presentation date"
+  - type: "sprint_context"
+    description: "Optional sprint information"
+
+output:
+  format: "html"
+  location: "output/"
+  filename_pattern: "{client}-shadowing-{grouping}-{date}.html"
+
+assets:
+  brand:
+    - "assets/prompts/brand-guidelines.md"
+  logos:
+    - "assets/logos/black-VOLT-TECHNOLOGIES2 (L).png"
+    - "assets/logos/white-VOLT-TECHNOLOGIES3(S).png"
+  templates:
+    - "assets/templates/slideshow-base.html"
+    - "assets/templates/slideshow-styles.css"
+    - "assets/templates/Show and tell powerpoint presentation example.pdf"
+
+settings:
+  theme:
+    primary: "#000000"
+    secondary: "#FFFFFF"
+    accent: "#D4AF37"
+  typography:
+    heading: "Montserrat"
+    body: "Fira Sans"
+  slide_structure:
+    - title_slide
+    - agenda_slide
+    - process_flow_intro_slides
+    - question_slides
+    - wrap_up_slide
+    - thank_you_slide
+  features:
+    - keyboard_navigation
+    - touch_swipe
+    - progress_indicator
+    - slide_counter
+    - thumbnail_grid
+    - print_support

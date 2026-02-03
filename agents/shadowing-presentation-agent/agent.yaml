@@ -1,40 +1,39 @@
-name: "Show and Tell Presentation Agent"
-description: "Generates D365 Business Central Show and Tell presentations from Notion data and transcripts"
-version: "1.1.0"
+name: "Shadowing Presentation Agent"
+description: "Generates Dynamics 365 Business Central shadowing meeting presentations with questions derived from Notion process flows"
+version: "1.0.0"
 model: "claude-opus-4-5-20251101"
 
 # Agent capabilities
 capabilities:
-  - transcript_parsing
+  - notion_integration
+  - question_generation
   - html_generation
   - pptx_generation
   - presentation_design
-  - notion_integration
   - brand_compliance
   - d365_business_central_expertise
+  - shadowing_facilitation
 
 # Input types this agent can process
 inputs:
-  - type: "notion_page"
-    description: "Notion page URL or title containing meeting transcript"
-  - type: "transcript"
-    description: "Raw meeting transcript text"
-  - type: "markdown"
-    description: "Markdown formatted transcript"
-  - type: "aggregated_data"
-    description: "Combined output from sub-agents"
+  - type: "notion_process_flows"
+    description: "Process flow data from Notion database"
+  - type: "process_flow_grouping"
+    description: "Category of process flows (e.g., 'Inventory Management', 'Order to Cash')"
+  - type: "client_name"
+    description: "Client/project name for the presentation"
   - type: "sprint_context"
-    description: "Sprint number and process flow grouping"
+    description: "Sprint number and shadowing session context"
 
 # Output configuration
 output:
   formats:
     - format: "html"
       location: "output/"
-      description: "Interactive Show and Tell HTML slideshow presentation"
+      description: "Interactive Shadowing presentation HTML slideshow with questions for customer meetings"
     - format: "pptx"
       location: "output/"
-      description: "PowerPoint presentation for client delivery"
+      description: "PowerPoint presentation for client shadowing sessions"
   primary: "pptx"
   conversion:
     enabled: true
@@ -42,18 +41,12 @@ output:
 
 # Sub-agents used by this agent
 sub_agents:
-  - name: "Process Flow Percentage"
-    path: "sub-agents/process-flow-percentage"
-    description: "Queries Notion for design completion percentages"
-  - name: "Requirements"
-    path: "sub-agents/requirements"
-    description: "Extracts requirements from process flows and transcripts"
-  - name: "Sprint Goals"
-    path: "sub-agents/sprint-goals"
-    description: "Pulls sprint goals assigned to process flows"
-  - name: "Demonstration"
-    path: "sub-agents/demonstration"
-    description: "Creates D365 BC demo steps for the presentation"
+  - name: "Shadowing Question Generator"
+    path: "sub-agents/shadowing-question-generator"
+    description: "Generates 4-10 shadowing questions per process flow from Notion data"
+  - name: "Presentation Creator"
+    path: "sub-agents/presentation-creator"
+    description: "Creates the final HTML presentation with branded styling"
 
 # Assets used by this agent
 assets:
@@ -64,6 +57,8 @@ assets:
     - "assets/logos/white-VOLT-TECHNOLOGIES3(S).png"
   templates:
     - "assets/templates/Show and tell powerpoint presentation example.pdf"
+    - "assets/templates/slideshow-base.html"
+    - "assets/templates/slideshow-styles.css"
 
 # MCP server connections
 mcp_servers:
@@ -84,6 +79,9 @@ settings:
   slide_defaults:
     transition: "fade"
     duration: "0.5s"
+  question_settings:
+    min_questions_per_flow: 4
+    max_questions_per_flow: 10
   features:
     - keyboard_navigation
     - touch_swipe_navigation

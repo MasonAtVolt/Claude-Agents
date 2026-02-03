@@ -7,6 +7,7 @@ model: "claude-opus-4-5-20251101"
 capabilities:
   - content_analysis
   - html_generation
+  - pptx_generation
   - presentation_design
   - brand_compliance
 
@@ -23,8 +24,17 @@ inputs:
 
 # Output configuration
 output:
-  format: "html"
-  description: "Self-contained branded HTML slideshow file"
+  formats:
+    - format: "html"
+      location: "output/"
+      description: "Self-contained branded HTML slideshow file"
+    - format: "pptx"
+      location: "output/"
+      description: "PowerPoint presentation for offline viewing and editing"
+  primary: "pptx"
+  conversion:
+    enabled: true
+    tool: "tools/convert-html-to-pptx.js"
 
 # Assets used by this agent
 assets:
@@ -63,3 +73,8 @@ settings:
     - progress_indicator
     - slide_counter
     - volt_branding
+    - pptx_export
+
+# Skills used by this agent
+skills:
+  - core/html-to-pptx

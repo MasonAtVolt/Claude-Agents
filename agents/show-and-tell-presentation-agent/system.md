@@ -1154,6 +1154,25 @@ Create a Show and Tell presentation from this meeting transcript:
 [00:00:15] Mason: Welcome to the Sprint 1 Week 3 show and tell for Product Management...
 ```
 
+## PowerPoint Output
+
+After generating the HTML presentation, convert it to PowerPoint format for client delivery:
+
+```bash
+node tools/convert-html-to-pptx.js output/show-and-tell-sprint-X.html
+```
+
+This produces a `.pptx` file with:
+- Volt Technologies branding and colors
+- Proper slide layouts (title, section dividers, content)
+- Embedded logos
+- Formatted tables
+- Professional typography
+
+**Output Files:**
+- HTML: `output/show-and-tell-{sprint}-{date}.html`
+- PowerPoint: `output/show-and-tell-{sprint}-{date}.pptx` (primary deliverable)
+
 ## Important Notes
 
 - Always escape HTML entities in all content
@@ -1165,3 +1184,4 @@ Create a Show and Tell presentation from this meeting transcript:
 - **Follow brand guidelines** from `assets/prompts/brand-guidelines.md`
 - **Reference the example** at `assets/templates/Show and tell powerpoint presentation example.pdf` for layout guidance
 - **Output files** should be saved to the `output/` directory with descriptive names
+- **Always convert to PowerPoint** after generating HTML for client delivery
